@@ -1,8 +1,16 @@
-#include <iostream>
+#include "Window.hpp"
+#include "InputManager.hpp"
 
 int main() {
 
-	std::cout << "Hello, World!" << std::endl;
+	Window::create(1280, 720, "Meadow");
+	InputManager::init(Window::getWindowPtr());
+	while (InputManager::processInput()) {
+		Window::clear();
+
+		Window::update();
+	}
+	Window::close();
 
 	return 0;
 }
