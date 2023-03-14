@@ -7,7 +7,7 @@
 class GUIButton {
 public:
 
-	void init(const glm::vec4& destRect);
+	void init(const glm::vec4& destRect, ColorRGBA8 color);
 	void update(float deltaTime);
 	void render();
 	bool isPressed();

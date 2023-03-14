@@ -5,7 +5,6 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-
 class InputManager {
 public:
 

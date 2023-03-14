@@ -1,5 +1,4 @@
 #define STB_TRUETYPE_IMPLEMENTATION
-
 #include "SpriteFont.hpp"
 #include "Utils.hpp"
 
@@ -53,7 +52,7 @@ void SpriteFont::printFont(SpriteBatch& _batch, const std::string& s, const glm:
 	for (unsigned int i = 0; i < s.size(); i++) {
 		stbtt_aligned_quad q;
 
-		stbtt_GetBakedQuad(m_charData, m_bitmapWidth, m_bitmapHeight, s[i] - 32, &xPos, &yPos, &q, 1);
+		stbtt_GetBakedQuad(m_charData, m_bitmapWidth, m_bitmapHeight, s[i] - 32, &xPos, &yPos, scale.x, &q, 1);
 
 		float x = q.x0;
 		float y = q.y0;
@@ -61,9 +60,8 @@ void SpriteFont::printFont(SpriteBatch& _batch, const std::string& s, const glm:
 		float h = (q.y1 - q.y0);
 		glm::vec4 quad = glm::vec4(x, y, w, h);
 		flipQuad(quad, yPos);
-
-		quad.z *= scale.x;
-		quad.w *= scale.y;
+		quad.w *= scale.x;
+		quad.z *= scale.y;
 
 		_batch.draw(quad, glm::vec4(q.s0, q.t0 + (q.t1 - q.t0), q.s1 - q.s0, -(q.t1 - q.t0)), color);
 	}

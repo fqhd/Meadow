@@ -2,33 +2,53 @@
 #include "InputManager.hpp"
 #include "GUIRenderer.hpp"
 #include "Game.hpp"
+#include "GameState.hpp"
+#include "MainMenu.hpp"
+#include "PauseMenu.hpp"
 
 int main() {
 
 	Window::create();
 	InputManager::init(Window::getWindowPtr());
-	InputManager::setMouseGrabbed(true);
-	GUIRenderer::init(1280, 720);
+	GUIRenderer::init(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	Game game;
 	game.init();
+	PauseMenu pausemenu;
+	pausemenu.init();
+	MainMenu mainmenu;
+	mainmenu.init();
+	GameState gamestate = GameState::MainMenu;
+
 
 	double before = glfwGetTime();
-
-	while (InputManager::processInput()) {
+	while (gamestate != GameState::Exit) {
 		Window::clear();
 		double dt = glfwGetTime() - before;
 		before = glfwGetTime();
+		if (!InputManager::processInput()) gamestate = GameState::Exit;
 
-		GUIRenderer::drawRect(glm::vec4(30.0f, 100.0f, 50.0f, 50.0f), ColorRGBA8(255, 0, 255));
-		GUIRenderer::drawText("Hello, World!", glm::vec2(30.0f, 150.0f), glm::vec2(1.0f), ColorRGBA8(240, 44, 88));
+		if (gamestate == GameState::Game) {
+			game.update(dt);
+			game.render();
+		}
+		else if (gamestate == GameState::MainMenu) {
+			mainmenu.update(dt);
+			mainmenu.render();
+		}
+		else if (gamestate == GameState::Pause) {
+			pausemenu.update();
+			pausemenu.render();
+		}
+
 		GUIRenderer::render();
-
-		game.update(dt);
-		game.render();
 
 		Window::update();
 	}
+
+	game.destroy();
+	mainmenu.destroy();
+	pausemenu.destroy();
 	Window::close();
 
 	return 0;

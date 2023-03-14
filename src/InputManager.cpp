@@ -8,6 +8,7 @@ std::unordered_map<int, bool> keymap;
 bool isFocused = true;
 char lastKeyPressed = -1;
 float mouseWheelDelta = 0;
+glm::vec2 initialWindowSize;
 
 std::unordered_map<int, bool> InputManager::m_previousKeymap;
 GLFWwindow* InputManager::m_window = nullptr;
@@ -83,6 +84,7 @@ void InputManager::init(GLFWwindow* _window) {
 	int w, h;
 	glfwGetWindowSize(_window, &w, &h);
 	windowSize = glm::vec2(w, h);
+	initialWindowSize = windowSize;
 
 	// We must inialize the mouse position on init because the mouseMoved() callback function only sets the mouse position when the mouse position is moved so they are not initialized at the start of the application.
 	double x, y;
@@ -135,7 +137,7 @@ glm::vec2 InputManager::getMousePosition() {
 }
 
 glm::vec2 InputManager::getScaledMousePosition() {
-	return mousePosition / windowSize * glm::vec2(1280.0f, 720.0f);
+	return mousePosition / windowSize * initialWindowSize;
 }
 
 glm::vec2 InputManager::getWindowSize() {

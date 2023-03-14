@@ -1,8 +1,8 @@
 #include "GUIButton.hpp"
 #include "Utils.hpp"
 
-void GUIButton::init(const glm::vec4& destRect) {
-	m_baseColor = ColorRGBA8(120, 255, 255, 255);
+void GUIButton::init(const glm::vec4& destRect, ColorRGBA8 color) {
+	m_baseColor = color;
 	m_destRect = destRect;
 	m_originalRect = destRect;
 	m_shadowRect = destRect;
