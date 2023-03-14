@@ -20,7 +20,6 @@ int main() {
 	mainmenu.init(&game.world);
 	GameState gamestate = GameState::MainMenu;
 
-
 	double before = glfwGetTime();
 	while (gamestate != GameState::Exit) {
 		Window::clear();
@@ -29,7 +28,7 @@ int main() {
 		if (!InputManager::processInput()) gamestate = GameState::Exit;
 
 		if (gamestate == GameState::Game) {
-			game.update(dt);
+			game.update(dt, gamestate);
 			game.render();
 		}
 		else if (gamestate == GameState::MainMenu) {
@@ -37,7 +36,8 @@ int main() {
 			mainmenu.render();
 		}
 		else if (gamestate == GameState::Pause) {
-			pausemenu.update();
+			pausemenu.update(gamestate);
+			game.render();
 			pausemenu.render();
 		}
 
@@ -47,8 +47,6 @@ int main() {
 	}
 
 	game.destroy();
-	mainmenu.destroy();
-	pausemenu.destroy();
 	Window::close();
 
 	return 0;

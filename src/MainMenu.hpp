@@ -10,7 +10,6 @@ public:
 	void init(World* world);
 	void update(float dt, GameState& state);
 	void render();
-	void destroy();
 
 private:
 

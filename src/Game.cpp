@@ -9,7 +9,12 @@ void Game::init() {
 
 }
 
-void Game::update(float dt) {
+void Game::update(float dt, GameState& state) {
+	if (InputManager::isKeyPressed(GLFW_KEY_ESCAPE)) {
+		state = GameState::Pause;
+		InputManager::setMouseGrabbed(false);
+	}
+
 	m_player.update(dt);
 	m_camera.setPosition(m_player.getEyePos());
 	m_camera.update();

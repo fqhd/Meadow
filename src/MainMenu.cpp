@@ -41,7 +41,3 @@ void MainMenu::render() {
 	GUIRenderer::drawText("Load", glm::vec2(1120.0f, 270.0f), glm::vec2(3.0f), ColorRGBA8(255, 255, 255, 255));
 	GUIRenderer::drawText(m_errorMsg, glm::vec2(600, 80.0f), glm::vec2(1.0f), ColorRGBA8(255, 0, 0, 255));
 }
-
-void MainMenu::destroy() {
-
-}
