@@ -3,16 +3,25 @@
 
 const int BUTTON_WIDTH = 300;
 
-void MainMenu::init() {
+void MainMenu::init(World* world) {
+	m_world = world;
 	createButton.init(glm::vec4(410, 200, 500, 200), ColorRGBA8(197, 255, 71, 255));
 	loadButton.init(glm::vec4(1010, 200, 500, 200), ColorRGBA8(197, 255, 71, 255));
 	input.init(glm::vec4(560, 500, 800, 200.0f));
 }
 
-void MainMenu::update(float dt) {
+void MainMenu::update(float dt, GameState& state) {
 	createButton.update(dt);
 	loadButton.update(dt);
 	input.update();
+
+	if (createButton.isPressed()) {
+		m_world->createNew();
+		InputManager::setMouseGrabbed(true);
+		state = GameState::Game;
+	}
+
+	
 }
 
 void MainMenu::render() {

@@ -11,10 +11,11 @@ public:
 	void render();
 	void destroy();
 
+	World world;
+
 private:
 	
 	Camera m_camera;
-	World m_world;
 	Player m_player;
 
 };

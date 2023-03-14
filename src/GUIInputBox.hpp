@@ -12,4 +12,5 @@ public:
 private:
 	glm::vec4 m_destRect;
 	std::string m_text = "";
+
 };

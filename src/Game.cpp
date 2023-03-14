@@ -2,9 +2,9 @@
 #include "Window.hpp"
 
 void Game::init() {
-	m_world.init();
+	world.init();
 	m_camera.init(WINDOW_WIDTH, WINDOW_HEIGHT);
-	m_player.init(&m_camera, &m_world);
+	m_player.init(&m_camera, &world);
 	m_camera.mouseSensitivity = 0.2f;
 
 }
@@ -16,9 +16,9 @@ void Game::update(float dt) {
 }
 
 void Game::render() {
-	m_world.render(m_camera);
+	world.render(m_camera);
 }
 
 void Game::destroy() {
-	m_world.destroy();
+	world.destroy();
 }

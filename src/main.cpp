@@ -17,7 +17,7 @@ int main() {
 	PauseMenu pausemenu;
 	pausemenu.init();
 	MainMenu mainmenu;
-	mainmenu.init();
+	mainmenu.init(&game.world);
 	GameState gamestate = GameState::MainMenu;
 
 
@@ -33,7 +33,7 @@ int main() {
 			game.render();
 		}
 		else if (gamestate == GameState::MainMenu) {
-			mainmenu.update(dt);
+			mainmenu.update(dt, gamestate);
 			mainmenu.render();
 		}
 		else if (gamestate == GameState::Pause) {
