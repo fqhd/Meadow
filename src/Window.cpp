@@ -3,7 +3,7 @@
 
 GLFWwindow* window;
 
-void Window::create(unsigned int _width, unsigned int _height, const char* _title) {
+void Window::create() {
 	// Initializing GLFW
 	if (!glfwInit()) {
 		std::cout << "Window: Failed to initialize GLFW" << std::endl;
@@ -30,7 +30,7 @@ void Window::create(unsigned int _width, unsigned int _height, const char* _titl
 #endif
 
 	// Creating the window
-	window = glfwCreateWindow(_width, _height, _title, NULL, NULL);
+	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Meadow", NULL, NULL);
 	if (!window) {
 		std::cout << "Window: Failed to create window" << std::endl;
 		return;

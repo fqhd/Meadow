@@ -10,7 +10,7 @@ const int WORLD_HEIGHT = 4;
 
 struct Block {
 	Block(){}
-	Block(GLubyte _r, GLubyte _g, GLubyte _b, bool _visible = true) {
+	Block(GLubyte _r, GLubyte _g, GLubyte _b, bool _visible) {
 		r = _r;
 		g = _g;
 		b = _b;

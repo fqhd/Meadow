@@ -6,8 +6,11 @@
 #include <glm/glm.hpp>
 #include <iostream>
 
+const int WINDOW_WIDTH = 1280;
+const int WINDOW_HEIGHT = 720;
+
 namespace Window {
-	void create(unsigned int _width, unsigned int _height, const char* _title);
+	void create();
 	void clear();
 	void update();
 	void close();

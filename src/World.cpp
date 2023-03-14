@@ -15,6 +15,12 @@ void World::init(){
 		}
 	}
 
+	for (int i = 0; i < WORLD_WIDTH * CHUNK_WIDTH; i++) {
+		for (int j = 0; j < WORLD_WIDTH * CHUNK_WIDTH; j++) {
+			setBlock(i, 0, j, Block(255, 255, 255, true));
+		}
+	}
+
 	// Initializing the m_shader
 	m_shader.load("chunk");
 }
