@@ -5,7 +5,6 @@
 #include "GUIRenderer.hpp"
 #include "InputManager.hpp"
 #include "Utils.hpp"
-#include "ColorRGBA8.hpp"
 
 class GUIInput {
 public:

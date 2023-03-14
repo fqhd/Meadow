@@ -1,5 +1,4 @@
 #include "GUIRenderer.hpp"
-#include "Image.hpp"
 
 SpriteBatch m_guiBatch;
 SpriteBatch m_textBatch;

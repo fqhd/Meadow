@@ -2,7 +2,6 @@
 
 #include "GUIRenderer.hpp"
 #include "InputManager.hpp"
-#include "ColorRGBA8.hpp"
 #include <glm/glm.hpp>
 
 class GUIButton {

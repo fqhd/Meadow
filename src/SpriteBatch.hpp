@@ -3,7 +3,6 @@
 #include <GLAD/glad.h>
 #include <vector>
 #include <glm/glm.hpp>
-#include "ColorRGBA8.hpp"
 
 struct ColorRGBA8 {
 	ColorRGBA8() {}
