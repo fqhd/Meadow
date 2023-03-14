@@ -1,5 +1,6 @@
 #pragma once
 #include "GUIButton.hpp"
+#include "GUIInputBox.hpp"
 
 class MainMenu {
 public:
@@ -11,6 +12,7 @@ public:
 
 private:
 
+	GUIInputBox input;
 	GUIButton createButton;
 	GUIButton loadButton;
 
