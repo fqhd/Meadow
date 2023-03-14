@@ -3,6 +3,7 @@
 #include "GUIRenderer.hpp"
 #include "Camera.hpp"
 #include "World.hpp"
+#include "Player.hpp"
 
 int main() {
 
@@ -15,6 +16,8 @@ int main() {
 	World world;
 	world.init();
 	camera.mouseSensitivity = 0.2f;
+	Player player;
+	player.init(&camera, &world);
 
 	for (int i = 0; i < WORLD_WIDTH * CHUNK_WIDTH; i++) {
 		for (int j = 0; j < WORLD_WIDTH * CHUNK_WIDTH; j++) {
@@ -22,13 +25,19 @@ int main() {
 		}
 	}
 
+	double before = glfwGetTime();
+
 	while (InputManager::processInput()) {
 		Window::clear();
+		double dt = glfwGetTime() - before;
+		before = glfwGetTime();
 
 		GUIRenderer::drawRect(glm::vec4(30.0f, 100.0f, 50.0f, 50.0f), ColorRGBA8(255, 0, 255));
 		GUIRenderer::drawText("Hello, World!", glm::vec2(30.0f, 150.0f), glm::vec2(1.0f), ColorRGBA8(240, 44, 88));
 		GUIRenderer::render();
 
+		player.update(dt);
+		camera.setPosition(player.getEyePos());
 		camera.update();
 		world.render(camera);
 
