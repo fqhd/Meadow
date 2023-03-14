@@ -8,8 +8,10 @@ void GUIInputBox::init(const glm::vec4& destRect) {
 void GUIInputBox::update() {
 	char lastKeyPressed = InputManager::getLastKeyPressed();
 	if (lastKeyPressed != -1) {
-		if (lastKeyPressed == -2 && m_text.size()) {
-			m_text.pop_back();
+		if (lastKeyPressed == -2) {
+			if (m_text.size()) {
+				m_text.pop_back();
+			}
 		}
 		else{
 			m_text += lastKeyPressed;
