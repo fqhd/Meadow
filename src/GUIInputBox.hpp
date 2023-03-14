@@ -8,6 +8,7 @@ public:
 	void init(const glm::vec4& destRect);
 	void update();
 	void render();
+	std::string getText();
 
 private:
 	glm::vec4 m_destRect;

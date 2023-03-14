@@ -16,12 +16,20 @@ void MainMenu::update(float dt, GameState& state) {
 	input.update();
 
 	if (createButton.isPressed()) {
-		m_world->createNew();
+		m_world->createNew(input.getText());
 		InputManager::setMouseGrabbed(true);
 		state = GameState::Game;
 	}
 
-	
+	if (loadButton.isPressed()) {
+		if (m_world->load(input.getText()) == -1) {
+			m_errorMsg = "Could not find world with name: " + input.getText();
+		}
+		else {
+			InputManager::setMouseGrabbed(true);
+			state = GameState::Game;
+		}
+	}
 }
 
 void MainMenu::render() {
@@ -31,6 +39,7 @@ void MainMenu::render() {
 	input.render();
 	GUIRenderer::drawText("Create", glm::vec2(460.0f, 270.0f), glm::vec2(3.0f), ColorRGBA8(255, 255, 255, 255));
 	GUIRenderer::drawText("Load", glm::vec2(1120.0f, 270.0f), glm::vec2(3.0f), ColorRGBA8(255, 255, 255, 255));
+	GUIRenderer::drawText(m_errorMsg, glm::vec2(600, 80.0f), glm::vec2(1.0f), ColorRGBA8(255, 0, 0, 255));
 }
 
 void MainMenu::destroy() {

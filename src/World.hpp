@@ -26,14 +26,14 @@ class World {
 public:
 
 	void init();
-	void createNew();
+	void createNew(const std::string& name);
 	void render(Camera& _camera);
 	Block getBlock(int _x, int _y, int _z);
 	void setBlock(int _x, int _y, int _z, Block _block);
 	void destroy();
 
-	void loadWorldFromFile(const std::string& path);
-	void saveWorldToFile(const std::string& path);
+	int load(const std::string& path);
+	void save();
 
 private:
 
@@ -59,5 +59,6 @@ private:
 
 	Chunk* m_chunks = nullptr;
 	Block* m_data = nullptr;
+	std::string m_name;
 
 };

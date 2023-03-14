@@ -19,6 +19,10 @@ void GUIInputBox::update() {
 	}
 }
 
+std::string GUIInputBox::getText() {
+	return m_text;
+}
+
 void GUIInputBox::render() {
 	GUIRenderer::drawRect(glm::vec4(m_destRect.x - 4.0f, m_destRect.y - 4.0f, m_destRect.z + 8.0f, m_destRect.w + 8.0f) + glm::vec4(8, -8, 0, 0), ColorRGBA8(0, 0, 0, 128));
 	GUIRenderer::drawRect(glm::vec4(m_destRect.x - 4.0f, m_destRect.y - 4.0f, m_destRect.z + 8.0f, m_destRect.w + 8.0f), ColorRGBA8(255, 255, 255));

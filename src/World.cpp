@@ -15,11 +15,11 @@ void World::init(){
 		}
 	}
 
-	// Initializing the m_shader
 	m_shader.load("chunk");
 }
 
-void World::createNew() {
+void World::createNew(const std::string& name) {
+	m_name = name;
 	memset(m_data, 0, sizeof(Block) * m_data_length);
 	for (int i = 0; i < WORLD_WIDTH * CHUNK_WIDTH; i++) {
 		for (int j = 0; j < WORLD_WIDTH * CHUNK_WIDTH; j++) {
@@ -57,20 +57,24 @@ void World::destroy(){
 	delete[] m_chunks;
 }
 
-void World::loadWorldFromFile(const std::string& path) {
-	std::ifstream file(path, std::ios::in | std::ios::binary);
+int World::load(const std::string& name) {
+	m_name = name;
+	std::string path = "worlds/";
+	std::ifstream file(path + m_name, std::ios::in | std::ios::binary);
 	if (!file.good()) {
 		std::cout << "World: Could not open file: " << path << std::endl;
-		return;
+		return -1;
 	}
 	for (int i = 0; i < m_data_length; i++) {
 		file.read((char*)&m_data[i], sizeof(uint8_t));
 	}
 	file.close();
+	return 0;
 }
 
-void World::saveWorldToFile(const std::string& path) {
-	std::ofstream file(path, std::ios::out | std::ios::binary);
+void World::save() {
+	std::string path = "worlds/";
+	std::ofstream file(path + m_name, std::ios::out | std::ios::binary);
 	if (!file.good()) {
 		std::cerr << "could not open " << path << " file for writing" << std::endl;
 		return;
