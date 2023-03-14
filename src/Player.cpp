@@ -95,6 +95,5 @@ void Player::placeBlock() {
 void Player::breakBlock() {
 	glm::ivec3 vb = visibleBlocks.breakableBlock;
 
-	Block b = m_world->getBlock(vb.x, vb.y, vb.z);
-	m_world->setBlock(vb.x, vb.y, vb.z, b);
+	m_world->setBlock(vb.x, vb.y, vb.z, Block(0, 0, 0, false));
 }
