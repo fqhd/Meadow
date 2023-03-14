@@ -9,10 +9,11 @@
 const int WINDOW_WIDTH = 1280;
 const int WINDOW_HEIGHT = 720;
 
-namespace Window {
-	void create();
-	void clear();
-	void update();
-	void close();
-	GLFWwindow* getWindowPtr();
-}
+class Window {
+public:
+	static void create();
+	static void clear();
+	static void update();
+	static void close();
+	static GLFWwindow* getWindowPtr();
+};

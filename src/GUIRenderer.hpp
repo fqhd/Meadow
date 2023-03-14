@@ -6,12 +6,13 @@
 #include "Utils.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace GUIRenderer {
+class GUIRenderer {
+public:
 
-	void init(unsigned int windowWidth, unsigned int windowHeight);
-	void drawRect(const glm::vec4& destRect, const ColorRGBA8& color);
-	void drawText(const std::string& s, const glm::vec2& position, const glm::vec2& scale, const ColorRGBA8& color);
-	void render();
-	void destroy();
+	static void init(unsigned int windowWidth, unsigned int windowHeight);
+	static void drawRect(const glm::vec4& destRect, const ColorRGBA8& color);
+	static void drawText(const std::string& s, const glm::vec2& position, const glm::vec2& scale, const ColorRGBA8& color);
+	static void render();
+	static void destroy();
 
 };
