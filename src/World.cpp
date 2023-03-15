@@ -69,6 +69,11 @@ int World::load(const std::string& name) {
 		file.read((char*)&m_data[i], sizeof(Block));
 	}
 	file.close();
+
+	for (int i = 0; i < WORLD_WIDTH * WORLD_WIDTH * WORLD_HEIGHT; i++) {
+		m_chunks[i].needsMeshUpdate = true;
+	}
+
 	return 0;
 }
 

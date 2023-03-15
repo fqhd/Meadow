@@ -16,11 +16,17 @@ void MainMenu::update(float dt, GameState& state) {
 	input.update();
 
 	if (createButton.isPressed()) {
-		m_world->createNew(input.text);
-		InputManager::setMouseGrabbed(true);
-		state = GameState::Game;
-		input.text = "";
-		m_errorMsg = "";
+		if (input.text != "") {
+			m_world->createNew(input.text);
+			InputManager::setMouseGrabbed(true);
+			state = GameState::Game;
+			input.text = "";
+			m_errorMsg = "";
+		}
+		else {
+			m_errorMsg = "Could not create world with empty name";
+		}
+		
 	}
 
 	if (loadButton.isPressed()) {
@@ -28,6 +34,7 @@ void MainMenu::update(float dt, GameState& state) {
 			m_errorMsg = "Could not find world with name: " + input.text;
 		}
 		else {
+			input.text = "";
 			m_errorMsg = "";
 			InputManager::setMouseGrabbed(true);
 			state = GameState::Game;
