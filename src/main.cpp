@@ -15,7 +15,7 @@ int main() {
 	Game game;
 	game.init();
 	PauseMenu pausemenu;
-	pausemenu.init();
+	pausemenu.init(&game.world);
 	MainMenu mainmenu;
 	mainmenu.init(&game.world);
 	GameState gamestate = GameState::MainMenu;

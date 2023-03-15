@@ -2,7 +2,8 @@
 #include "Window.hpp"
 #include "InputManager.hpp"
 
-void PauseMenu::init() {
+void PauseMenu::init(World* world) {
+	m_world = world;
 	saveButton.init(glm::vec4(760, 150, 400, 150), ColorRGBA8(197, 255, 71, 255));
 }
 
@@ -11,6 +12,9 @@ void PauseMenu::update(float deltaTime, GameState& state) {
 	if (InputManager::isKeyPressed(GLFW_KEY_ESCAPE)) {
 		state = GameState::Game;
 		InputManager::setMouseGrabbed(true);
+	}
+	if (saveButton.isPressed()) {
+		m_world->save();
 	}
 }
 

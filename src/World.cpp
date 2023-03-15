@@ -59,28 +59,28 @@ void World::destroy(){
 
 int World::load(const std::string& name) {
 	m_name = name;
-	std::string path = "worlds/";
-	std::ifstream file(path + m_name, std::ios::in | std::ios::binary);
+	std::string path = "worlds/" + m_name;
+	std::ifstream file(path, std::ios::in | std::ios::binary);
 	if (!file.good()) {
 		std::cout << "World: Could not open file: " << path << std::endl;
 		return -1;
 	}
 	for (int i = 0; i < m_data_length; i++) {
-		file.read((char*)&m_data[i], sizeof(uint8_t));
+		file.read((char*)&m_data[i], sizeof(Block));
 	}
 	file.close();
 	return 0;
 }
 
 void World::save() {
-	std::string path = "worlds/";
-	std::ofstream file(path + m_name, std::ios::out | std::ios::binary);
+	std::string path = "worlds/" + m_name;
+	std::ofstream file(path, std::ios::out | std::ios::binary);
 	if (!file.good()) {
 		std::cerr << "could not open " << path << " file for writing" << std::endl;
 		return;
 	}
 	for (int i = 0; i < m_data_length; i++) {
-		file.write((char*)&m_data[i], sizeof(uint8_t));
+		file.write((char*)&m_data[i], sizeof(Block));
 	}
 	file.close();
 	if(!file.good()) {
