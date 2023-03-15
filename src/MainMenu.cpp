@@ -16,14 +16,15 @@ void MainMenu::update(float dt, GameState& state) {
 	input.update();
 
 	if (createButton.isPressed()) {
-		m_world->createNew(input.getText());
+		m_world->createNew(input.text);
 		InputManager::setMouseGrabbed(true);
 		state = GameState::Game;
+		input.text = "";
 	}
 
 	if (loadButton.isPressed()) {
-		if (m_world->load(input.getText()) == -1) {
-			m_errorMsg = "Could not find world with name: " + input.getText();
+		if (m_world->load(input.text) == -1) {
+			m_errorMsg = "Could not find world with name: " + input.text;
 		}
 		else {
 			InputManager::setMouseGrabbed(true);

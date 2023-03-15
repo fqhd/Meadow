@@ -12,6 +12,7 @@ public:
 
 private:
 	
+	GUIButton exitButton;
 	GUIButton saveButton;
 	World* m_world;
 
