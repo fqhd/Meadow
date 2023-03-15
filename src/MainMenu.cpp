@@ -20,6 +20,7 @@ void MainMenu::update(float dt, GameState& state) {
 		InputManager::setMouseGrabbed(true);
 		state = GameState::Game;
 		input.text = "";
+		m_errorMsg = "";
 	}
 
 	if (loadButton.isPressed()) {
@@ -27,6 +28,7 @@ void MainMenu::update(float dt, GameState& state) {
 			m_errorMsg = "Could not find world with name: " + input.text;
 		}
 		else {
+			m_errorMsg = "";
 			InputManager::setMouseGrabbed(true);
 			state = GameState::Game;
 		}
