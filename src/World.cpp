@@ -196,11 +196,11 @@ void World::setBlock(int x, int y, int z, Block block) {
 
 void World::addBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	addTopFace(x, y, z, r, g, b);
-	addBottomFace(x, y, z, r, g, b);
-	addLeftFace(x, y, z, r, g, b);
-	addRightFace(x, y, z, r, g, b);
-	addFrontFace(x, y, z, r, g, b);
-	addBackFace(x, y, z, r, g, b);
+	addBottomFace(x, y, z, r * 0.9, g * 0.9, b * 0.9);
+	addLeftFace(x, y, z, r * 0.92, g * 0.92, b * 0.92);
+	addRightFace(x, y, z, r * 0.94, g * 0.94, b * 0.94);
+	addFrontFace(x, y, z, r * 0.98, g * 0.98, b * 0.98);
+	addBackFace(x, y, z, r * 0.96, g * 0.96, b * 0.96);
 }
 
 Chunk* World::getChunk(int _x, int _y, int _z) {
@@ -226,6 +226,10 @@ bool isBlockTransparent(uint8_t _blockID){
 	return _blockID == 7 || !_blockID;
 }
 
+float map(float ao) {
+	return 0.6 + ao * 0.4;
+}
+
 void World::addTopFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x, y + 1, z);
 	if(!isBlockTransparent(adjacentBlock.visible)) return;
@@ -234,6 +238,10 @@ void World::addTopFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GL
 	float a01 = calcAO(getBlock(x - 1, y + 1, z).visible, getBlock(x, y + 1, z + 1).visible, getBlock(x - 1, y + 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
 	float a11 = calcAO(getBlock(x, y + 1, z + 1).visible, getBlock(x + 1, y + 1, z).visible, getBlock(x + 1, y + 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
 	float a10 = calcAO(getBlock(x, y + 1, z - 1).visible, getBlock(x + 1, y + 1, z).visible, getBlock(x + 1, y + 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
+	a00 = map(a00);
+	a01 = map(a01);
+	a11 = map(a11);
+	a10 = map(a10);
 
 	if(a00 + a11 > a01 + a10) {
 		// Generate normal quad
@@ -262,6 +270,10 @@ void World::addBottomFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g,
 	float a01 = calcAO(getBlock(x - 1, y - 1, z).visible, getBlock(x, y - 1, z + 1).visible, getBlock(x - 1, y - 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
 	float a10 = calcAO(getBlock(x, y - 1, z - 1).visible, getBlock(x + 1, y - 1, z).visible, getBlock(x + 1, y - 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
 	float a11 = calcAO(getBlock(x, y - 1, z + 1).visible, getBlock(x + 1, y - 1, z).visible, getBlock(x + 1, y - 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
+	a00 = map(a00);
+	a01 = map(a01);
+	a11 = map(a11);
+	a10 = map(a10);
 
 	if(a00 + a11 > a01 + a10) {
 		// Generate normal quad
@@ -291,7 +303,10 @@ void World::addRightFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, 
 	float a01 = calcAO(getBlock(x - 1, y, z - 1).visible, getBlock(x - 1, y + 1, z).visible, getBlock(x - 1, y + 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
 	float a10 = calcAO(getBlock(x - 1, y, z + 1).visible, getBlock(x - 1, y - 1, z).visible, getBlock(x - 1, y - 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
 	float a11 = calcAO(getBlock(x - 1, y + 1, z).visible, getBlock(x - 1, y, z + 1).visible, getBlock(x - 1, y + 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
-
+	a00 = map(a00);
+	a01 = map(a01);
+	a11 = map(a11);
+	a10 = map(a10);
 
 	if(a00 + a11 > a01 + a10) {
 		// Generate normal quad
@@ -320,6 +335,10 @@ void World::addLeftFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, G
 	float a01 = calcAO(getBlock(x + 1, y, z - 1).visible, getBlock(x + 1, y + 1, z).visible, getBlock(x + 1, y + 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
 	float a10 = calcAO(getBlock(x + 1, y, z + 1).visible, getBlock(x + 1, y - 1, z).visible, getBlock(x + 1, y - 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
 	float a11 = calcAO(getBlock(x + 1, y + 1, z).visible, getBlock(x + 1, y, z + 1).visible, getBlock(x + 1, y + 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
+	a00 = map(a00);
+	a01 = map(a01);
+	a11 = map(a11);
+	a10 = map(a10);
 
 	if(a00 + a11 > a01 + a10) {
 		// Generate normal quad
@@ -348,6 +367,10 @@ void World::addFrontFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, 
 	float a01 = calcAO(getBlock(x - 1, y, z - 1).visible, getBlock(x, y + 1, z - 1).visible, getBlock(x - 1, y + 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
 	float a10 = calcAO(getBlock(x, y - 1, z - 1).visible, getBlock(x + 1, y, z - 1).visible, getBlock(x + 1, y - 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
 	float a11 = calcAO(getBlock(x, y + 1, z - 1).visible, getBlock(x + 1, y, z - 1).visible, getBlock(x + 1, y + 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
+	a00 = map(a00);
+	a01 = map(a01);
+	a11 = map(a11);
+	a10 = map(a10);
 
 	if(a00 + a11 > a01 + a10) {
 		// Generate normal quad
@@ -376,6 +399,10 @@ void World::addBackFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, G
 	float a01 = calcAO(getBlock(x - 1, y, z + 1).visible, getBlock(x, y + 1, z + 1).visible, getBlock(x - 1, y + 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
 	float a10 = calcAO(getBlock(x, y - 1, z + 1).visible, getBlock(x + 1, y, z + 1).visible, getBlock(x + 1, y - 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
 	float a11 = calcAO(getBlock(x, y + 1, z + 1).visible, getBlock(x + 1, y, z + 1).visible, getBlock(x + 1, y + 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
+	a00 = map(a00);
+	a01 = map(a01);
+	a11 = map(a11);
+	a10 = map(a10);
 
 	if(a00 + a11 > a01 + a10) {
 		// Generate normal quad
