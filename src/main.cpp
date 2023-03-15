@@ -36,7 +36,7 @@ int main() {
 			mainmenu.render();
 		}
 		else if (gamestate == GameState::Pause) {
-			pausemenu.update(gamestate);
+			pausemenu.update(dt, gamestate);
 			game.render();
 			pausemenu.render();
 		}
