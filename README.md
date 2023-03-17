@@ -8,7 +8,6 @@ A very simple and self explanatory tool to make voxel art in first person(like m
 
 - Game:
   - Hotbar
-  - Crosshair
   - Block Outline
   - Shadows
   - Skybox

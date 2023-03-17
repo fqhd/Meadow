@@ -31,6 +31,7 @@ public:
 	Block getBlock(int _x, int _y, int _z);
 	void setBlock(int _x, int _y, int _z, Block _block);
 	void destroy();
+	std::string getName();
 
 	int load(const std::string& path);
 	void save();

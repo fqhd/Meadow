@@ -194,6 +194,10 @@ void World::setBlock(int x, int y, int z, Block block) {
 	}
 }
 
+std::string World::getName() {
+	return m_name;
+}
+
 void World::addBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	addTopFace(x, y, z, r, g, b);
 	addBottomFace(x, y, z, r * 0.9, g * 0.9, b * 0.9);
