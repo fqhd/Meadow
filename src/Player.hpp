@@ -2,6 +2,7 @@
 
 #include "Camera.hpp"
 #include "World.hpp"
+#include "Hotbar.hpp"
 
 struct VisibleBlocks {
 	glm::ivec3 breakableBlock;

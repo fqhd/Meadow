@@ -1,12 +1,12 @@
 #include "Game.hpp"
 #include "Window.hpp"
+#include "GUIRenderer.hpp"
 
 void Game::init() {
 	world.init();
 	m_camera.init(WINDOW_WIDTH, WINDOW_HEIGHT);
 	m_player.init(&m_camera, &world);
 	m_camera.mouseSensitivity = 0.2f;
-
 }
 
 void Game::update(float dt, GameState& state) {
@@ -22,6 +22,9 @@ void Game::update(float dt, GameState& state) {
 
 void Game::render() {
 	world.render(m_camera);
+
+	// Crosshair
+	GUIRenderer::drawRect(glm::vec4(956, 536, 8, 8), ColorRGBA8(0, 0, 0));
 }
 
 void Game::destroy() {
