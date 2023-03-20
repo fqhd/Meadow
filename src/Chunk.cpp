@@ -5,11 +5,7 @@ Chunk::Chunk() {
 	m_vboID = 0;
 }
 
-void Chunk::init(int _x, int _y, int _z) {
-	x = _x;
-	y = _y;
-	z = _z;
-
+void Chunk::init() {
 	glGenVertexArrays(1, &m_vaoID);
 	glBindVertexArray(m_vaoID);
 

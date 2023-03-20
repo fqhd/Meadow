@@ -2,27 +2,19 @@
 #include <iostream>
 
 void World::init(){
-	m_data_length = WORLD_WIDTH * WORLD_WIDTH * WORLD_HEIGHT * CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH;
-	m_data = new Block[m_data_length];
-	memset(m_data, 0, sizeof(Block) * m_data_length);
+	m_data = new Block[CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH];
+	memset(m_data, 0, sizeof(Block) * CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH);
 
-	m_chunks = new Chunk[WORLD_WIDTH * WORLD_WIDTH * WORLD_HEIGHT];
-	for(unsigned int y = 0; y < WORLD_HEIGHT; y++){
-		for(unsigned int z = 0; z < WORLD_WIDTH; z++){
-			for(unsigned int x = 0; x < WORLD_WIDTH; x++){
-				getChunk(x, y, z)->init(x * CHUNK_WIDTH, y * CHUNK_WIDTH, z * CHUNK_WIDTH);
-			}
-		}
-	}
+	m_chunk.init();
 
 	m_shader.load("chunk");
 }
 
 void World::createNew(const std::string& name) {
 	m_name = name;
-	memset(m_data, 0, sizeof(Block) * m_data_length);
-	for (int i = 0; i < WORLD_WIDTH * CHUNK_WIDTH; i++) {
-		for (int j = 0; j < WORLD_WIDTH * CHUNK_WIDTH; j++) {
+	memset(m_data, 0, sizeof(Block) * CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH);
+	for (int i = 0; i < CHUNK_WIDTH; i++) {
+		for (int j = 0; j < CHUNK_WIDTH; j++) {
 			setBlock(i, 0, j, Block(255, 255, 255, true));
 		}
 	}
@@ -30,31 +22,21 @@ void World::createNew(const std::string& name) {
 
 void World::render(Camera& camera){
 	updateMeshes();
+
 	m_shader.bind();
 
 	m_shader.loadUniform("projection", camera.getProjectionMatrix());
 	m_shader.loadUniform("view", camera.getViewMatrix());
 
-	unsigned int ww = WORLD_WIDTH;
-	unsigned int wl = WORLD_WIDTH;
-	unsigned int wh = WORLD_HEIGHT;
-
-	for (int i = 0; i < WORLD_WIDTH * WORLD_WIDTH * WORLD_HEIGHT; i++) {
-		if (m_chunks[i].getNumVertices()) {
-			m_chunks[i].render();
-		}
-	}
+	m_chunk.render();
 
 	m_shader.unbind();
 }
 
 void World::destroy(){
-	for (int i = 0; i < WORLD_WIDTH * WORLD_WIDTH * WORLD_HEIGHT; i++) {
-		m_chunks[i].destroy();
-	}
+	m_chunk.destroy();
 	m_shader.destroy();
 	delete[] m_data;
-	delete[] m_chunks;
 }
 
 int World::load(const std::string& name) {
@@ -65,14 +47,12 @@ int World::load(const std::string& name) {
 		std::cout << "World: Could not open file: " << path << std::endl;
 		return -1;
 	}
-	for (int i = 0; i < m_data_length; i++) {
+	for (int i = 0; i < CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH; i++) {
 		file.read((char*)&m_data[i], sizeof(Block));
 	}
 	file.close();
 
-	for (int i = 0; i < WORLD_WIDTH * WORLD_WIDTH * WORLD_HEIGHT; i++) {
-		m_chunks[i].needsMeshUpdate = true;
-	}
+	m_chunk.needsMeshUpdate = true;
 
 	return 0;
 }
@@ -84,7 +64,7 @@ void World::save() {
 		std::cerr << "could not open " << path << " file for writing" << std::endl;
 		return;
 	}
-	for (int i = 0; i < m_data_length; i++) {
+	for (int i = 0; i < CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH; i++) {
 		file.write((char*)&m_data[i], sizeof(Block));
 	}
 	file.close();
@@ -95,26 +75,24 @@ void World::save() {
 }
 
 void World::updateMeshes(){
-	for (int i = 0; i < WORLD_WIDTH * WORLD_WIDTH * WORLD_HEIGHT; i++) {
-		if (m_chunks[i].needsMeshUpdate) {
-			generateMesh(&m_chunks[i]);
-			m_chunks[i].pushData(m_vertices.data(), m_vertices.size());
-			m_chunks[i].needsMeshUpdate = false;
-		}
+	if (m_chunk.needsMeshUpdate) {
+		m_vertices.clear();
+		generateMesh();
+		m_chunk.pushData(m_vertices.data(), m_vertices.size());
+		m_chunk.needsMeshUpdate = false;
 	}
 }
 
-void World::generateMesh(Chunk* chunk){
-	m_vertices.clear();
+void World::generateMesh(){
 	unsigned int cw = CHUNK_WIDTH;
 
 	for(unsigned int y = 0; y < cw; y++){
 		for(unsigned int z = 0; z < cw; z++){
 			for(unsigned int x = 0; x < cw; x++){
-				Block block = getBlock(chunk->x + x, chunk->y + y, chunk->z + z);
+				Block block = getBlock(x, y, z);
 
 				if(block.visible){
-					addBlock(chunk->x + x, chunk->y + y, chunk->z + z, block.r, block.g, block.b);
+					addBlock(x, y, z, block.r, block.g, block.b);
 				}
 			}
 		}
@@ -122,11 +100,7 @@ void World::generateMesh(Chunk* chunk){
 }
 
 bool World::isBlockInLocalWorld(int _x, int _y, int _z){
-	unsigned int maxW = WORLD_WIDTH * CHUNK_WIDTH;
-	unsigned int maxL = WORLD_WIDTH * CHUNK_WIDTH;
-	unsigned int maxH = WORLD_HEIGHT * CHUNK_WIDTH;
-
-	if(_x < 0 || _x >= maxW || _z < 0 || _z >= maxL || _y < 0 || _y >= maxH) return false;
+	if(_x < 0 || _x >= CHUNK_WIDTH || _z < 0 || _z >= CHUNK_WIDTH || _y < 0 || _y >= CHUNK_WIDTH) return false;
 	return true;
 }
 
@@ -135,10 +109,7 @@ Block World::getBlock(int _x, int _y, int _z){
 		return Block(0, 0, 0, false);
 	}
 
-	unsigned int maxW = WORLD_WIDTH * CHUNK_WIDTH;
-	unsigned int maxL = WORLD_WIDTH * CHUNK_WIDTH;
-
-	return m_data[(_y * maxW * maxL) + (_z * maxW) + _x];
+	return m_data[(_y * CHUNK_WIDTH * CHUNK_WIDTH) + (_z * CHUNK_WIDTH) + _x];
 }
 
 void World::setBlock(int x, int y, int z, Block block) {
@@ -146,52 +117,8 @@ void World::setBlock(int x, int y, int z, Block block) {
 		return;
 	}
 
-	unsigned int ww = WORLD_WIDTH;
-	unsigned int wl = WORLD_WIDTH;
-	unsigned int wh = WORLD_HEIGHT;
-	unsigned int cw = CHUNK_WIDTH;
-
-	unsigned int maxW = ww * cw;
-	unsigned int maxL = wl * cw;
-
-	// Getting the chunk the block is in
-	unsigned int posX = x / cw;
-	unsigned int posY = y / cw;
-	unsigned int posZ = z / cw;
-
-	// Right now, we have the position of the chunk that the block has been placed in stored in posX, posY, and posZ
-	// So we first of all, queue this chunk up for a mesh update
-	getChunk(posX, posY, posZ)->needsMeshUpdate = true;
-
-	// Setting the block based on chunk space coords
-	m_data[(y * maxW * maxL) + (z * maxW) + x] = block;
-
-	// Next, we check if the placed block has been placed on any edge
-	// Update neighboring m_chunks if block is on the edge of the current chunk
-	if(x % cw == 0){
-		Chunk* chunk = getChunk((posX - 1) % ww, posY, posZ);
-		if(chunk) chunk->needsMeshUpdate = true;
-	}
-	if((x + 1) % cw == 0){
-		Chunk* chunk = getChunk((posX + 1) % ww, posY, posZ);
-		if(chunk) chunk->needsMeshUpdate = true;
-	}
-	if(z % cw == 0){
-		Chunk* chunk = getChunk(posX, posY, (posZ - 1) % wl);
-		if(chunk) chunk->needsMeshUpdate = true;
-	}
-	if((z + 1) % cw == 0){
-		Chunk* chunk = getChunk(posX, posY, (posZ + 1) % wl);
-		if(chunk) chunk->needsMeshUpdate = true;
-	}
-	if(y % cw == 0){
-		Chunk* chunk = getChunk(posX, (posY - 1) % wh, posZ);
-		if(chunk) chunk->needsMeshUpdate = true;
-	}
-	if((y + 1) % cw == 0){
-		Chunk* chunk = getChunk(posX, (posY + 1) % wh, posZ);
-		if(chunk) chunk->needsMeshUpdate = true;
-	}
+	m_data[(y * CHUNK_WIDTH * CHUNK_WIDTH) + (z * CHUNK_WIDTH) + x] = block;
+	m_chunk.needsMeshUpdate = true;
 }
 
 std::string World::getName() {
@@ -207,17 +134,6 @@ void World::addBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLub
 	addBackFace(x, y, z, r * 0.96, g * 0.96, b * 0.96);
 }
 
-Chunk* World::getChunk(int _x, int _y, int _z) {
-	unsigned int ww = WORLD_WIDTH;
-	unsigned int wl = WORLD_WIDTH;
-	unsigned int wh = WORLD_HEIGHT;
-
-	if(_y < 0 || _y >= wh || _x < 0 || _x >= ww || _z < 0 || _z >= wl){
-		return nullptr;
-	}
-	return &m_chunks[(_y * ww * wl) + (_z * ww) + _x];
-}
-
 unsigned int calcAO(bool side1, bool side2, bool corner, bool face){
 	if(face) return 2;
 	if(side1 && side2){
@@ -226,17 +142,13 @@ unsigned int calcAO(bool side1, bool side2, bool corner, bool face){
 	return 3 - (side1 + side2 + corner);
 }
 
-bool isBlockTransparent(uint8_t _blockID){
-	return _blockID == 7 || !_blockID;
-}
-
 float map(float ao) {
 	return 0.6 + ao * 0.4;
 }
 
 void World::addTopFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x, y + 1, z);
-	if(!isBlockTransparent(adjacentBlock.visible)) return;
+	if(adjacentBlock.visible) return;
 
 	float a00 = calcAO(getBlock(x, y + 1, z - 1).visible, getBlock(x - 1, y + 1, z).visible, getBlock(x - 1, y + 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
 	float a01 = calcAO(getBlock(x - 1, y + 1, z).visible, getBlock(x, y + 1, z + 1).visible, getBlock(x - 1, y + 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
@@ -268,7 +180,7 @@ void World::addTopFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GL
 
 void World::addBottomFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x, y - 1, z);
-	if(!isBlockTransparent(adjacentBlock.visible)) return;
+	if(adjacentBlock.visible) return;
 
 	float a00 = calcAO(getBlock(x, y - 1, z - 1).visible, getBlock(x - 1, y - 1, z).visible, getBlock(x - 1, y - 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
 	float a01 = calcAO(getBlock(x - 1, y - 1, z).visible, getBlock(x, y - 1, z + 1).visible, getBlock(x - 1, y - 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
@@ -301,7 +213,7 @@ void World::addBottomFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g,
 
 void World::addRightFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x - 1, y, z);
-	if(!isBlockTransparent(adjacentBlock.visible)) return;
+	if(adjacentBlock.visible) return;
 
 	float a00 = calcAO(getBlock(x - 1, y, z - 1).visible, getBlock(x - 1, y - 1, z).visible, getBlock(x - 1, y - 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
 	float a01 = calcAO(getBlock(x - 1, y, z - 1).visible, getBlock(x - 1, y + 1, z).visible, getBlock(x - 1, y + 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
@@ -333,7 +245,7 @@ void World::addRightFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, 
 
 void World::addLeftFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x + 1, y, z);
-	if(!isBlockTransparent(adjacentBlock.visible)) return;
+	if(adjacentBlock.visible) return;
 
 	float a00 = calcAO(getBlock(x + 1, y, z - 1).visible, getBlock(x + 1, y - 1, z).visible, getBlock(x + 1, y - 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
 	float a01 = calcAO(getBlock(x + 1, y, z - 1).visible, getBlock(x + 1, y + 1, z).visible, getBlock(x + 1, y + 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
@@ -365,7 +277,7 @@ void World::addLeftFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, G
 
 void World::addFrontFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x, y, z - 1);
-	if(!isBlockTransparent(adjacentBlock.visible)) return;
+	if(adjacentBlock.visible) return;
 
 	float a00 = calcAO(getBlock(x - 1, y, z - 1).visible, getBlock(x, y - 1, z - 1).visible, getBlock(x - 1, y - 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
 	float a01 = calcAO(getBlock(x - 1, y, z - 1).visible, getBlock(x, y + 1, z - 1).visible, getBlock(x - 1, y + 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
@@ -397,7 +309,7 @@ void World::addFrontFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, 
 
 void World::addBackFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x, y, z + 1);
-	if(!isBlockTransparent(adjacentBlock.visible)) return;
+	if(adjacentBlock.visible) return;
 
 	float a00 = calcAO(getBlock(x - 1, y, z + 1).visible, getBlock(x, y - 1, z + 1).visible, getBlock(x - 1, y - 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
 	float a01 = calcAO(getBlock(x - 1, y, z + 1).visible, getBlock(x, y + 1, z + 1).visible, getBlock(x - 1, y + 1, z + 1).visible, adjacentBlock.visible) / 3.0f;

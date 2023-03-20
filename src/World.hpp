@@ -5,9 +5,6 @@
 #include "Shader.hpp"
 #include <cstdint>
 
-const int WORLD_WIDTH = 4;
-const int WORLD_HEIGHT = 4;
-
 struct Block {
 	Block(){}
 	Block(GLubyte _r, GLubyte _g, GLubyte _b, bool _visible) {
@@ -40,7 +37,7 @@ private:
 
 	// Utility functions
 	void updateMeshes();
-	void generateMesh(Chunk* chunk);
+	void generateMesh();
 	void addBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b);
 	bool isBlockInLocalWorld(int _x, int _y, int _z);
 
@@ -52,13 +49,11 @@ private:
 	void addLeftFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b);
 	void addFrontFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b);
 	void addBackFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b);
-	Chunk* getChunk(int x, int y, int z);
 
 	//We keep vertices so we dont have to reallocate memory every time we want to generate a chunk
 	Shader m_shader;
-	unsigned int m_data_length = 0;
 
-	Chunk* m_chunks = nullptr;
+	Chunk m_chunk;
 	Block* m_data = nullptr;
 	std::string m_name;
 

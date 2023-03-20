@@ -10,7 +10,7 @@ const float SPEED = 4.0f;
 void Player::init(Camera* camera, World* world) {
 	m_camera = camera;
 	m_world = world;
-	position = glm::vec3(WORLD_WIDTH * CHUNK_WIDTH / 2, 1, WORLD_WIDTH * CHUNK_WIDTH / 2);
+	position = glm::vec3(CHUNK_WIDTH / 2, 1, CHUNK_WIDTH / 2);
 }
 
 void Player::update(float deltaTime) {

@@ -23,7 +23,7 @@ class Chunk {
 public:
 
 	Chunk();
-	void init(int _x, int _y, int _z);
+	void init();
 
 	// Utility functions
 	void render();
@@ -32,9 +32,6 @@ public:
 	void destroy();
 
 	// Public variables
-	int x = 0;
-	int y = 0;
-	int z = 0;
 	bool needsMeshUpdate = true;
 
 private:
