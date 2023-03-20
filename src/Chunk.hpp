@@ -3,7 +3,7 @@
 #include <vector>
 #include <cstddef>
 #include <iostream>
-#include <GLAD/glad.h>
+#include "glad.h"
 
 const int CHUNK_WIDTH = 16;
 

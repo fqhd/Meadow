@@ -7,7 +7,7 @@
 #include <iostream>
 #include <cstdarg>
 #include <chrono>
-#include <GLAD/glad.h>
+#include "glad.h"
 #include <glm/glm.hpp>
 
 enum CollisionType {
