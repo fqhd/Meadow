@@ -15,10 +15,10 @@ public:
 
 	Renderer renderer;
 	World world;
+	Player player;
 
 private:
 	
 	Camera m_camera;
-	Player m_player;
 
 };

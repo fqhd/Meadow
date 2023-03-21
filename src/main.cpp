@@ -38,7 +38,7 @@ int main() {
 		else if (gamestate == GameState::Pause) {
 			pausemenu.update(dt, gamestate);
 			game.render();
-			pausemenu.render();
+			pausemenu.render(&game.player.hotbar);
 		}
 
 		Window::update();

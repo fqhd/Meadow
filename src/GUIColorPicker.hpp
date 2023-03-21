@@ -10,5 +10,6 @@ public:
 
 	ColorRGBA8 currentSliderColor;
 	ColorRGBA8 selectedColor;
+	bool change = false;
 
 };

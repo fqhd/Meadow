@@ -1,16 +1,27 @@
 #version 330 core
 
-layout (location = 0) in vec2 position;
-layout (location = 1) in vec2 uv;
-layout (location = 2) in vec4 color;
+out vec2 uv;
 
-out vec4 pass_color;
-out vec2 pass_uv;
+uniform vec4 destRect;
+uniform vec4 uvRect;
 
-uniform mat4 matrix;
+uniform mat4 ortho;
 
 void main() {
-    gl_Position = matrix * vec4(position, 0.0, 1.0);
-    pass_color = color;
-    pass_uv = uv;
+    vec2 position;
+    if(gl_VertexID == 0) {
+        position = vec2(destRect.x, destRect.y);
+        uv = vec2(uvRect.x, uvRect.y);
+    }else if(gl_VertexID == 1) {
+        position = vec2(destRect.x, destRect.y + destRect.w);
+        uv = vec2(uvRect.x, uvRect.y + uvRect.w);
+    }else if(gl_VertexID == 2) {
+        position = vec2(destRect.x + destRect.z, destRect.y);
+        uv = vec2(uvRect.x + uvRect.z, uvRect.y);
+    }else if(gl_VertexID == 3) {
+        position = vec2(destRect.x + destRect.z, destRect.y + destRect.w);
+        uv = vec2(uvRect.x + uvRect.z, uvRect.y + uvRect.w);
+    }
+
+    gl_Position = ortho * vec4(position, 0.0, 1.0);
 }

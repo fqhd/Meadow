@@ -3,6 +3,7 @@
 #include "Camera.hpp"
 #include "World.hpp"
 #include "Hotbar.hpp"
+#include "ColorRGBA8.hpp"
 
 struct VisibleBlocks {
 	glm::ivec3 breakableBlock;
@@ -17,6 +18,7 @@ public:
 	void update(float deltaTime);
 	glm::vec3 getEyePos() const;
 
+	Hotbar hotbar;
 	VisibleBlocks visibleBlocks;
 	glm::vec3 position;
 

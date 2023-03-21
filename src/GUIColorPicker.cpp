@@ -25,7 +25,7 @@ void GUIColorPicker::render() {
 	GUIRenderer::drawRect(glm::vec4(1000.0f, 650.0f, 200.0f, 200.0f), selectedColor);
 	GUIRenderer::drawRect(glm::vec4(1200.0f, 650.0f, 500.0f, 200.0f), ColorRGBA8(0, 0, 0), ColorRGBA8(), currentSliderColor, ColorRGBA8(0, 0 ,0));
 	GUIRenderer::drawRainbow(glm::vec4(1000.0f, 600.0f, 700.0f, 50.0f));
-
+	change = false;
 	if (InputManager::isKeyDown(GLFW_MOUSE_BUTTON_1)) { // Select color based on hue
 		glm::ivec2 mousePos = InputManager::getScaledMousePosition();
 		if (Utils::isInside(mousePos, glm::vec4(1000.0f, 600.0f, 700.0f, 50.0f))) {
@@ -58,7 +58,7 @@ void GUIColorPicker::render() {
 			selectedColor.g = color.g * 255;
 			selectedColor.b = color.b * 255;
 			selectedColor.a = 255;
-
+			change = true;
 			GUIRenderer::drawRect(glm::vec4(mousePos.x - 4.0f, mousePos.y - 4.0f, 64.0f, 64.0f), selectedColor);
 		}
 	}

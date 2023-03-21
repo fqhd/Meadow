@@ -16,6 +16,7 @@ void Player::init(Camera* camera, World* world) {
 void Player::update(float deltaTime) {
 	movement(deltaTime);
 	placeAndBreakBlocks();
+	hotbar.update();
 }
 
 void Player::placeAndBreakBlocks() {
@@ -88,7 +89,8 @@ void Player::getVisibleBlocks() {
 }
 
 void Player::placeBlock() {
-	Block b(255, 255, 255, true);
+	ColorRGBA8 color = hotbar.colors[hotbar.selectorIndex];
+	Block b(color.r, color.g, color.b, true);
 	m_world->setBlock(visibleBlocks.placeableBlock.x, visibleBlocks.placeableBlock.y, visibleBlocks.placeableBlock.z, b);
 }
 
