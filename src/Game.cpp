@@ -7,6 +7,7 @@ void Game::init() {
 	m_camera.init(WINDOW_WIDTH, WINDOW_HEIGHT);
 	m_player.init(&m_camera, &world);
 	m_camera.mouseSensitivity = 0.2f;
+	renderer.init();
 }
 
 void Game::update(float dt, GameState& state) {
@@ -21,7 +22,9 @@ void Game::update(float dt, GameState& state) {
 }
 
 void Game::render() {
-	world.render(m_camera);
+	world.updateMeshes();
+	renderer.generateShadowMap(&world);
+	world.render(m_camera, renderer.shadowmap, renderer.lightSpaceMatrix, -renderer.lightPos * 10000.0f);
 
 	// Crosshair
 	GUIRenderer::drawRect(glm::vec4(956, 536, 8, 8), ColorRGBA8(0, 0, 0));

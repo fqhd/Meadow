@@ -24,19 +24,21 @@ public:
 
 	void init();
 	void createNew(const std::string& name);
-	void render(Camera& _camera);
+	void render(Camera& _camera, GLuint depthmap, const glm::mat4& lightSpaceMatrix, const glm::vec3& lightPos);
 	Block getBlock(int _x, int _y, int _z);
 	void setBlock(int _x, int _y, int _z, Block _block);
 	void destroy();
 	std::string getName();
+	void updateMeshes();
 
 	int load(const std::string& path);
 	void save();
 
+	Chunk chunk;
+
 private:
 
 	// Utility functions
-	void updateMeshes();
 	void generateMesh();
 	void addBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b);
 	bool isBlockInLocalWorld(int _x, int _y, int _z);
@@ -53,7 +55,6 @@ private:
 	//We keep vertices so we dont have to reallocate memory every time we want to generate a chunk
 	Shader m_shader;
 
-	Chunk m_chunk;
 	Block* m_data = nullptr;
 	std::string m_name;
 

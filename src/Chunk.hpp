@@ -8,15 +8,16 @@
 const int CHUNK_WIDTH = 16;
 
 struct ChunkVertex {
-	ChunkVertex(GLubyte _x, GLubyte _y, GLubyte _z, GLubyte _r, GLubyte _g, GLubyte _b) {
+	ChunkVertex(GLubyte _x, GLubyte _y, GLubyte _z, GLubyte _r, GLubyte _g, GLubyte _b, GLubyte _n) {
 		x = _x;
 		y = _y;
 		z = _z;
 		r = _r;
 		g = _g;
 		b = _b;
+		n = _n;
 	}
-	GLubyte x, y, z, r, g, b;
+	GLubyte x, y, z, r, g, b, n;
 };
 
 class Chunk {

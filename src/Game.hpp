@@ -1,6 +1,7 @@
 #pragma once
 #include "Player.hpp"
 #include "World.hpp"
+#include "Renderer.hpp"
 #include "Camera.hpp"
 #include "GameState.hpp"
 
@@ -12,6 +13,7 @@ public:
 	void render();
 	void destroy();
 
+	Renderer renderer;
 	World world;
 
 private:
