@@ -5,6 +5,7 @@
 #include <fstream>
 #include <unordered_map>
 #include <glm/glm.hpp>
+#include "ColorRGBA8.hpp"
 
 class Shader {
 public:
@@ -14,7 +15,9 @@ public:
 	void unbind();
 	void destroy();
 
+	void loadUniform(const std::string& name, ColorRGBA8 color);
 	void loadUniform(const std::string& name, const glm::vec3& vec);
+	void loadUniform(const std::string& name, const glm::vec4& vec);
 	void loadUniform(const std::string& name, const glm::mat4& matrix);
 	void loadUniform(const std::string& name, float f);
 	void loadUniform(const std::string& name, int i);

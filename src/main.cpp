@@ -41,8 +41,6 @@ int main() {
 			pausemenu.render();
 		}
 
-		GUIRenderer::render();
-
 		Window::update();
 	}
 

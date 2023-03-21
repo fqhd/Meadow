@@ -26,7 +26,6 @@ void MainMenu::update(float dt, GameState& state) {
 		else {
 			m_errorMsg = "Could not create world with empty name";
 		}
-		
 	}
 
 	if (loadButton.isPressed()) {

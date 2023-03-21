@@ -65,7 +65,16 @@ GLint Shader::getUniformLocation(const std::string& name){
 	return it->second;
 }
 
-void Shader::loadUniform(const std::string& name, const glm::vec3& vec){
+void Shader::loadUniform(const std::string& name, ColorRGBA8 color) {
+	glm::vec4 c(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.0f);
+	glUniform4fv(getUniformLocation(name), 1, &c.x);
+}
+
+void Shader::loadUniform(const std::string& name, const glm::vec4& vec) {
+	glUniform4fv(getUniformLocation(name), 1, &vec.x);
+}
+
+void Shader::loadUniform(const std::string& name, const glm::vec3& vec) {
 	glUniform3fv(getUniformLocation(name), 1, &vec.x);
 }
 
