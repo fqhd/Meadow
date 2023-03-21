@@ -40,7 +40,7 @@ void GUIRenderer::init(unsigned int windowWidth, unsigned int windowHeight){
 
 void GUIRenderer::drawRect(const glm::vec4& destRect, const ColorRGBA8& color) {
 	shader.bind();
-	shader.loadUniform("isFont", false);
+	shader.loadUniform("type", 2);
 	shader.loadUniform("destRect", destRect);
 	shader.loadUniform("uvRect", glm::vec4(0.0, 0.0, 1.0, 1.0));
 	shader.loadUniform("color[0]", color);
@@ -57,13 +57,26 @@ void GUIRenderer::drawRect(const glm::vec4& destRect, const ColorRGBA8& color) {
 
 void GUIRenderer::drawRect(const glm::vec4& destRect, ColorRGBA8 v1, ColorRGBA8 v2, ColorRGBA8 v3, ColorRGBA8 v4) {
 	shader.bind();
-	shader.loadUniform("isFont", false);
+	shader.loadUniform("type", 2);
 	shader.loadUniform("destRect", destRect);
 	shader.loadUniform("uvRect", glm::vec4(0.0, 0.0, 1.0, 1.0));
 	shader.loadUniform("color[0]", v1);
 	shader.loadUniform("color[1]", v2);
-	shader.loadUniform("color[2]", v3);
-	shader.loadUniform("color[3]", v4);
+	shader.loadUniform("color[2]", v4);
+	shader.loadUniform("color[3]", v3);
+	glBindVertexArray(vao);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+}
+
+void GUIRenderer::drawRainbow(const glm::vec4& destRect) {
+	shader.bind();
+	shader.loadUniform("type", 1);
+	shader.loadUniform("destRect", destRect);
+	shader.loadUniform("uvRect", glm::vec4(0.0, 0.0, 1.0, 1.0));
 	glBindVertexArray(vao);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
@@ -87,7 +100,7 @@ void GUIRenderer::drawText(const std::string& s, const glm::vec2& position, cons
 	glBindTexture(GL_TEXTURE_2D, m_font_texture);
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
-	shader.loadUniform("isFont", true);
+	shader.loadUniform("type", 0);
 	shader.loadUniform("color[0]", color);
 	for (unsigned int i = 0; i < s.size(); i++) {
 		stbtt_aligned_quad q;
