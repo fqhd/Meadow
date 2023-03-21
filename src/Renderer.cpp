@@ -3,7 +3,7 @@
 const int width = 4096;
 
 void Renderer::init() {
-    lightPos = glm::vec3(16, 18, 16);
+    lightPos = glm::vec3(15, 18, 16);
 	glGenFramebuffers(1, &framebuffer);
 
     glGenTextures(1, &shadowmap);
@@ -38,7 +38,7 @@ void Renderer::generateShadowMap(World* world) {
     glClear(GL_DEPTH_BUFFER_BIT);
 
     shader.loadUniform("lightSpaceMatrix", lightSpaceMatrix);
-
+    
     world->chunk.render();
     
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
