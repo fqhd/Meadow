@@ -14,3 +14,4 @@ A very simple and self explanatory tool to make voxel art in first person(like m
   - Zoom
   - Pick block color with mouse middle click
   - Particles
+  - DDA algorithm
