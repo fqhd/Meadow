@@ -5,13 +5,13 @@
 #include "Shader.hpp"
 #include "Window.hpp"
 
-class Renderer {
+class ShadowMap {
 public:
 
 	void init();
 	void generateShadowMap(World* world);
 
-	GLuint shadowmap;
+	GLuint texture;
 	glm::mat4 lightSpaceMatrix;
 	glm::vec3 lightPos;
 

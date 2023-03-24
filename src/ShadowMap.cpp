@@ -1,13 +1,13 @@
-#include "Renderer.hpp"
+#include "ShadowMap.hpp"
 
 const int width = 4096;
 
-void Renderer::init() {
+void ShadowMap::init() {
     lightPos = glm::vec3(15, 18, 16);
 	glGenFramebuffers(1, &framebuffer);
 
-    glGenTextures(1, &shadowmap);
-    glBindTexture(GL_TEXTURE_2D, shadowmap);
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width, width, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -15,7 +15,7 @@ void Renderer::init() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowmap, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -31,7 +31,7 @@ void Renderer::init() {
     lightSpaceMatrix = lightProjection * lightView;
 }
 
-void Renderer::generateShadowMap(World* world) {
+void ShadowMap::generateShadowMap(World* world) {
     shader.bind();
     glViewport(0, 0, width, width);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
