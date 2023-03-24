@@ -8,6 +8,7 @@ void Game::init() {
 	player.init(&m_camera, &world);
 	m_camera.mouseSensitivity = 0.2f;
 	shadowmap.init();
+	gbuffer.init();
 }
 
 void Game::update(float dt, GameState& state) {
@@ -24,6 +25,9 @@ void Game::update(float dt, GameState& state) {
 void Game::render() {
 	world.updateMeshes();
 	shadowmap.generateShadowMap(&world);
+	gbuffer.populateGBuffer(&world, &m_camera);
+
+
 	world.render(m_camera, shadowmap.texture, shadowmap.lightSpaceMatrix, shadowmap.lightPos * 10000.0f);
 	
 	// Crosshair

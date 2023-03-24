@@ -4,6 +4,7 @@
 #include "ShadowMap.hpp"
 #include "Camera.hpp"
 #include "GameState.hpp"
+#include "GBuffer.hpp"
 
 class Game {
 public:
@@ -16,6 +17,7 @@ public:
 	ShadowMap shadowmap;
 	World world;
 	Player player;
+	GBuffer gbuffer;
 
 private:
 	
