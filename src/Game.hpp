@@ -5,6 +5,7 @@
 #include "Camera.hpp"
 #include "GameState.hpp"
 #include "GBuffer.hpp"
+#include "SSAO.hpp"
 
 class Game {
 public:
@@ -18,9 +19,8 @@ public:
 	World world;
 	Player player;
 	GBuffer gbuffer;
-
-private:
+	SSAO ssao;
+	Camera camera;
 	
-	Camera m_camera;
 
 };

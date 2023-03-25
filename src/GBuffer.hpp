@@ -17,6 +17,7 @@ public:
 
 private:
 
+	GLuint rbo;
 	GLuint fbo;
 	Shader shader;
 

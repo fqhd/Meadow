@@ -2,12 +2,12 @@
 #define STB_TRUETYPE_IMPLEMENTATION
 #include "stb_truetype.h"
 
-Shader shader;
-GLuint m_font_texture;
-stbtt_bakedchar* m_charData = nullptr;
-int bitmapWidth = 512;
-int bitmapHeight = 512;
-GLuint vao;
+static Shader shader;
+static GLuint m_font_texture;
+static stbtt_bakedchar* m_charData = nullptr;
+static int bitmapWidth = 512;
+static int bitmapHeight = 512;
+static GLuint vao;
 
 void GUIRenderer::init(unsigned int windowWidth, unsigned int windowHeight){
 	unsigned char* fontData = Utils::readFileToBuffer("res/fonts/minecraft_font.ttf");
@@ -50,6 +50,21 @@ void GUIRenderer::drawRect(const glm::vec4& destRect, const ColorRGBA8& color) {
 	glBindVertexArray(vao);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+}
+
+void GUIRenderer::drawRect(const glm::vec4& destRect, GLuint texture) {
+	shader.bind();
+	shader.loadUniform("type", 3);
+	shader.loadUniform("destRect", destRect);
+	shader.loadUniform("uvRect", glm::vec4(0.0, 0.0, 1.0, 1.0));
+	glBindVertexArray(vao);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
