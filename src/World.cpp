@@ -1,13 +1,10 @@
 #include "World.hpp"
-#include <iostream>
+#include <fstream>
 
 void World::init(){
 	m_data = new Block[CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH];
 	memset(m_data, 0, sizeof(Block) * CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH);
-
 	chunk.init();
-
-	m_shader.load("chunk");
 }
 
 void World::createNew(const std::string& name) {
@@ -20,24 +17,8 @@ void World::createNew(const std::string& name) {
 	}
 }
 
-void World::render(Camera& camera, GLuint depthmap, const glm::mat4& lightSpaceMatrix, const glm::vec3& lightPos) {
-	m_shader.bind();
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, depthmap);
-	m_shader.loadUniform("lightPos", lightPos);
-	m_shader.loadUniform("lightSpaceMatrix", lightSpaceMatrix);
-	m_shader.loadUniform("projection", camera.getProjectionMatrix());
-	m_shader.loadUniform("view", camera.getViewMatrix());
-
-	chunk.render();
-
-	m_shader.unbind();
-}
-
 void World::destroy(){
 	chunk.destroy();
-	m_shader.destroy();
 	delete[] m_data;
 }
 
@@ -145,7 +126,7 @@ unsigned int calcAO(bool side1, bool side2, bool corner, bool face){
 }
 
 float map(float ao) {
-	return 0.7 + ao * 0.3;
+	return 1.0 + ao * 0.0;
 }
 
 void World::addTopFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){

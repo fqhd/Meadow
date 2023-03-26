@@ -6,6 +6,8 @@
 #include "GameState.hpp"
 #include "GBuffer.hpp"
 #include "SSAO.hpp"
+#include "SSAOBlur.hpp"
+#include "MasterRenderer.hpp"
 
 class Game {
 public:
@@ -21,6 +23,8 @@ public:
 	GBuffer gbuffer;
 	SSAO ssao;
 	Camera camera;
+	SSAOBlur ssaoblur;
+	MasterRenderer renderer;
 	
 
 };

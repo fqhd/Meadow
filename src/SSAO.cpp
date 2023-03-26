@@ -15,7 +15,7 @@ void SSAO::init() {
     std::uniform_real_distribution<float> randomFloats(0.0, 1.0); // random floats between [0.0, 1.0]
     std::default_random_engine generator;
     std::vector<glm::vec3> ssaoKernel;
-    const int numKernels = 64;
+    const int numKernels = 128;
     for (unsigned int i = 0; i < numKernels; ++i)
     {
         glm::vec3 sample(
@@ -45,7 +45,7 @@ void SSAO::init() {
     shader.loadUniform("texNoise", 2);
 
     std::vector<glm::vec3> ssaoNoise;
-    for (unsigned int i = 0; i < 16; i++)
+    for (unsigned int i = 0; i < 16*16; i++)
     {
         glm::vec3 noise(
             randomFloats(generator) * 2.0 - 1.0,
@@ -56,7 +56,7 @@ void SSAO::init() {
 
     glGenTextures(1, &noiseTexture);
     glBindTexture(GL_TEXTURE_2D, noiseTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 4, 4, 0, GL_RGB, GL_FLOAT, &ssaoNoise[0]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 16, 16, 0, GL_RGB, GL_FLOAT, &ssaoNoise[0]);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -93,13 +93,11 @@ void SSAO::generateSSAOTexture(GLuint gPos, GLuint gNorm, const glm::mat4& proj)
     shader.loadUniform("projection", proj);
 
     glBindVertexArray(vao);
-    glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     glDisable(GL_BLEND);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glEnable(GL_BLEND);
     glEnable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
