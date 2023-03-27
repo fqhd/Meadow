@@ -4,12 +4,10 @@ in vec3 fragColor;
 in vec4 fragPosLightSpace;
 in vec3 normal;
 in vec3 lightDir;
-in vec3 textureData;
 
 out vec4 out_color;
 
 uniform sampler2D depthmap;
-uniform sampler2DArray aoTexture;
 
 float ShadowCalculation()
 {
@@ -41,11 +39,8 @@ void main() {
     float brightness = max(dot(normal, lightDir), 0.2);
     brightness *= 1.5;
     brightness *= shadow;
-	
-	float ao = texture(aoTexture, vec3(textureData.xy, 2.0)).r;
-	ao = 1.0 - ao;
 
-    vec3 diffuse = fragColor * clamp(brightness, 0.5, 1.0) * ao;
+    vec3 diffuse = fragColor * clamp(brightness, 0.5, 1.0);
 
-	out_color = vec4(textureData.xy, 0.0, 1.0);
+	out_color = vec4(diffuse, 1.0);
 }

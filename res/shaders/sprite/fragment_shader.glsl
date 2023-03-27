@@ -24,14 +24,12 @@ vec3 hsv2rgb(vec3 c)
 }
 
 void main() {
-	if(type == 0){ // TEXT
+	if(type == 0){
 		float a = texture(ourTexture, uv).r;
 		out_color = vec4(color[0].rgb, color[0].a * a);
-	}else if(type == 1){ // RAINBOW
+	}else if(type == 1){
 		out_color = vec4(hsv2rgb(vec3(uv.x, 1.0, 1.0)), 1.0);
-	}else if(type == 2){ // COLORED QUAD
+	}else{
 		out_color = biLerp(color[0], color[1], color[2], color[3], uv.x, uv.y);
-	}else if(type == 3) { // TEXTURED QUAD
-		out_color = vec4(texture(ourTexture, uv).xyz, 1.0);
 	}
 }
