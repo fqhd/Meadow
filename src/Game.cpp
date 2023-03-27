@@ -8,6 +8,9 @@ void Game::init() {
 	player.init(&camera, &world);
 	camera.mouseSensitivity = 0.2f;
 	shadowmap.init();
+	gbuffer.init();
+	ssao.init();
+	ssaoblur.init();
 	renderer.init();
 }
 
@@ -24,8 +27,13 @@ void Game::update(float dt, GameState& state) {
 
 void Game::render() {
 	world.updateMeshes();
+
 	shadowmap.generateShadowMap(&world);
-	renderer.render(&shadowmap, &camera, &world);
+	gbuffer.populateGBuffer(&world, &camera);
+	ssao.generateSSAOTexture(gbuffer.gPosition, gbuffer.gNormal, camera.getProjectionMatrix());
+	ssaoblur.blurTexture(ssao.ssaoTexture);
+
+	renderer.render(&gbuffer, &shadowmap, ssaoblur.blurredTexture, &camera);
 
 	// Crosshair
 	GUIRenderer::drawRect(glm::vec4(956, 536, 8, 8), ColorRGBA8(0, 0, 0));
@@ -33,7 +41,11 @@ void Game::render() {
 
 	// Debug
 	const float size = 300;
-	GUIRenderer::drawRect(glm::vec4(0, size*2, size, size), shadowmap.texture);
+	GUIRenderer::drawRect(glm::vec4(0.0, 0.0, size, size), gbuffer.gPosition);
+	GUIRenderer::drawRect(glm::vec4(size, 0.0, size, size), gbuffer.gNormal);
+	GUIRenderer::drawRect(glm::vec4(0.0, size, size, size), gbuffer.gAlbedo);
+	GUIRenderer::drawRect(glm::vec4(size, size, size, size), ssao.ssaoTexture);
+	GUIRenderer::drawRect(glm::vec4(0, size*2, size, size), ssaoblur.blurredTexture);
 }
 
 void Game::destroy() {
