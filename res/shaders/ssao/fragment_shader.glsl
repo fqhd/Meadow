@@ -12,7 +12,7 @@ uniform vec3 samples[128];
 
 // parameters (you'd probably want to use them as uniforms to more easily tweak the effect)
 int kernelSize = 128;
-float radius = 0.25;
+float radius = 0.2;
 float bias = 0.025;
 
 // tile noise texture over screen based on screen dimensions divided by noise size
@@ -53,5 +53,5 @@ void main()
     }
     occlusion = 1.0 - (occlusion / kernelSize);
     
-    FragColor = pow(occlusion, 10.0);
+    FragColor = pow(occlusion, 10);
 }
