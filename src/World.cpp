@@ -117,207 +117,74 @@ void World::addBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLub
 	addBackFace(x, y, z, r, g, b);
 }
 
-unsigned int calcAO(bool side1, bool side2, bool corner, bool face){
-	if(face) return 2;
-	if(side1 && side2){
-		return 0;
-	}
-	return 3 - (side1 + side2 + corner);
-}
-
-float map(float ao) {
-	return 1.0 + ao * 0.0;
-}
-
 void World::addTopFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x, y + 1, z);
 	if(adjacentBlock.visible) return;
 
-	float a00 = calcAO(getBlock(x, y + 1, z - 1).visible, getBlock(x - 1, y + 1, z).visible, getBlock(x - 1, y + 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
-	float a01 = calcAO(getBlock(x - 1, y + 1, z).visible, getBlock(x, y + 1, z + 1).visible, getBlock(x - 1, y + 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
-	float a11 = calcAO(getBlock(x, y + 1, z + 1).visible, getBlock(x + 1, y + 1, z).visible, getBlock(x + 1, y + 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
-	float a10 = calcAO(getBlock(x, y + 1, z - 1).visible, getBlock(x + 1, y + 1, z).visible, getBlock(x + 1, y + 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
-	a00 = map(a00);
-	a01 = map(a01);
-	a11 = map(a11);
-	a10 = map(a10);
-
-	if(a00 + a11 > a01 + a10) {
-		// Generate normal quad
-		m_vertices.emplace_back(x, y + 1, z, a00*r, a00*g, a00*b, 0);
-		m_vertices.emplace_back(x, y + 1, z + 1, a01*r, a01*g, a01*b, 0);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11*r, a11*g, a11*b, 0);
-		m_vertices.emplace_back(x, y + 1, z, a00*r, a00*g, a00*b, 0);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 0);
-		m_vertices.emplace_back(x + 1, y + 1, z, a10 * r, a10 * g, a10 * b, 0);
-	} else {
-		// Generate flipped quad
-		m_vertices.emplace_back(x + 1, y + 1, z, a10 * r, a10 * g, a10 * b, 0);
-		m_vertices.emplace_back(x, y + 1, z, a00 * r, a00 * g, a00 * b, 0);
-		m_vertices.emplace_back(x, y + 1, z + 1, a01 * r, a01 * g, a01 * b, 0);
-		m_vertices.emplace_back(x + 1, y + 1, z, a10 * r, a10 * g, a10 * b, 0);
-		m_vertices.emplace_back(x, y + 1, z + 1, a01 * r, a01 * g, a01 * b, 0);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 0);
-	}
+	m_vertices.emplace_back(x, y + 1, z, r, g, b, 0);
+	m_vertices.emplace_back(x, y + 1, z + 1, r, g, b, 0);
+	m_vertices.emplace_back(x + 1, y + 1, z + 1, r, g, b, 0);
+	m_vertices.emplace_back(x, y + 1, z, r, g, b, 0);
+	m_vertices.emplace_back(x + 1, y + 1, z + 1, r, g, b, 0);
+	m_vertices.emplace_back(x + 1, y + 1, z, r, g, b, 0);
 }
 
 void World::addBottomFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x, y - 1, z);
 	if(adjacentBlock.visible) return;
 
-	float a00 = calcAO(getBlock(x, y - 1, z - 1).visible, getBlock(x - 1, y - 1, z).visible, getBlock(x - 1, y - 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
-	float a01 = calcAO(getBlock(x - 1, y - 1, z).visible, getBlock(x, y - 1, z + 1).visible, getBlock(x - 1, y - 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
-	float a10 = calcAO(getBlock(x, y - 1, z - 1).visible, getBlock(x + 1, y - 1, z).visible, getBlock(x + 1, y - 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
-	float a11 = calcAO(getBlock(x, y - 1, z + 1).visible, getBlock(x + 1, y - 1, z).visible, getBlock(x + 1, y - 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
-	a00 = map(a00);
-	a01 = map(a01);
-	a11 = map(a11);
-	a10 = map(a10);
-
-	if(a00 + a11 > a01 + a10) {
-		// Generate normal quad
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 1);
-		m_vertices.emplace_back(x + 1, y, z + 1, a11 * r, a11 * g, a11 * b, 1);
-		m_vertices.emplace_back(x, y, z + 1, a01 * r, a01 * g, a01 * b, 1);
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 1);
-		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b, 1);
-		m_vertices.emplace_back(x + 1, y, z + 1, a11 * r, a11 * g, a11 * b, 1);
-
-	} else {
-		// Generate flipped quad
-		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b, 1);
-		m_vertices.emplace_back(x, y, z + 1, a01 * r, a01 * g, a01 * b, 1);
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 1);
-		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b, 1);
-		m_vertices.emplace_back(x + 1, y, z + 1, a11 * r, a11 * g, a11 * b, 1);
-		m_vertices.emplace_back(x, y, z + 1, a01 * r, a01 * g, a01 * b, 1);
-	}
+	m_vertices.emplace_back(x, y, z, r, g, b, 1);
+	m_vertices.emplace_back(x + 1, y, z + 1, r, g, b, 1);
+	m_vertices.emplace_back(x, y, z + 1, r, g, b, 1);
+	m_vertices.emplace_back(x, y, z, r, g, b, 1);
+	m_vertices.emplace_back(x + 1, y, z, r, g, b, 1);
+	m_vertices.emplace_back(x + 1, y, z + 1, r, g, b, 1);
 }
 
 void World::addRightFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x - 1, y, z);
 	if(adjacentBlock.visible) return;
 
-	float a00 = calcAO(getBlock(x - 1, y, z - 1).visible, getBlock(x - 1, y - 1, z).visible, getBlock(x - 1, y - 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
-	float a01 = calcAO(getBlock(x - 1, y, z - 1).visible, getBlock(x - 1, y + 1, z).visible, getBlock(x - 1, y + 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
-	float a10 = calcAO(getBlock(x - 1, y, z + 1).visible, getBlock(x - 1, y - 1, z).visible, getBlock(x - 1, y - 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
-	float a11 = calcAO(getBlock(x - 1, y + 1, z).visible, getBlock(x - 1, y, z + 1).visible, getBlock(x - 1, y + 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
-	a00 = map(a00);
-	a01 = map(a01);
-	a11 = map(a11);
-	a10 = map(a10);
-
-	if(a00 + a11 > a01 + a10) {
-		// Generate normal quad
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 2);
-		m_vertices.emplace_back(x, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 2);
-		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b, 2);
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 2);
-		m_vertices.emplace_back(x, y, z + 1, a10 * r, a10 * g, a10 * b, 2);
-		m_vertices.emplace_back(x, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 2);
-	} else {
-		// Generate flipped quad
-		m_vertices.emplace_back(x, y, z + 1, a10 * r, a10 * g, a10 * b, 2);
-		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b, 2);
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 2);
-		m_vertices.emplace_back(x, y, z + 1, a10 * r, a10 * g, a10 * b, 2);
-		m_vertices.emplace_back(x, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 2);
-		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b, 2);
-	}
+	m_vertices.emplace_back(x, y, z, r, g, b, 2);
+	m_vertices.emplace_back(x, y + 1, z + 1, r, g, b, 2);
+	m_vertices.emplace_back(x, y + 1, z, r, g, b, 2);
+	m_vertices.emplace_back(x, y, z, r, g, b, 2);
+	m_vertices.emplace_back(x, y, z + 1, r, g, b, 2);
+	m_vertices.emplace_back(x, y + 1, z + 1, r, g, b, 2);
 }
 
 void World::addLeftFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x + 1, y, z);
 	if(adjacentBlock.visible) return;
 
-	float a00 = calcAO(getBlock(x + 1, y, z - 1).visible, getBlock(x + 1, y - 1, z).visible, getBlock(x + 1, y - 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
-	float a01 = calcAO(getBlock(x + 1, y, z - 1).visible, getBlock(x + 1, y + 1, z).visible, getBlock(x + 1, y + 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
-	float a10 = calcAO(getBlock(x + 1, y, z + 1).visible, getBlock(x + 1, y - 1, z).visible, getBlock(x + 1, y - 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
-	float a11 = calcAO(getBlock(x + 1, y + 1, z).visible, getBlock(x + 1, y, z + 1).visible, getBlock(x + 1, y + 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
-	a00 = map(a00);
-	a01 = map(a01);
-	a11 = map(a11);
-	a10 = map(a10);
-
-	if(a00 + a11 > a01 + a10) {
-		// Generate normal quad
-		m_vertices.emplace_back(x + 1, y, z, a00 * r, a00 * g, a00 * b, 3);
-		m_vertices.emplace_back(x + 1, y + 1, z, a01 * r, a01 * g, a01 * b, 3);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 3);
-		m_vertices.emplace_back(x + 1, y, z, a00 * r, a00 * g, a00 * b, 3);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 3);
-		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b, 3);
-	} else {
-		// Generate flipped quad
-		m_vertices.emplace_back(x + 1, y + 1, z, a01 * r, a01 * g, a01 * b, 3);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 3);
-		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b, 3);
-		m_vertices.emplace_back(x + 1, y + 1, z, a01 * r, a01 * g, a01 * b, 3);
-		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b, 3);
-		m_vertices.emplace_back(x + 1, y, z, a00 * r, a00 * g, a00 * b, 3);
-	}
+	m_vertices.emplace_back(x + 1, y, z, r, g, b, 3);
+	m_vertices.emplace_back(x + 1, y + 1, z, r, g, b, 3);
+	m_vertices.emplace_back(x + 1, y + 1, z + 1, r, g, b, 3);
+	m_vertices.emplace_back(x + 1, y, z, r, g, b, 3);
+	m_vertices.emplace_back(x + 1, y + 1, z + 1, r, g, b, 3);
+	m_vertices.emplace_back(x + 1, y, z + 1, r, g, b, 3);
 }
 
 void World::addFrontFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x, y, z - 1);
 	if(adjacentBlock.visible) return;
 
-	float a00 = calcAO(getBlock(x - 1, y, z - 1).visible, getBlock(x, y - 1, z - 1).visible, getBlock(x - 1, y - 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
-	float a01 = calcAO(getBlock(x - 1, y, z - 1).visible, getBlock(x, y + 1, z - 1).visible, getBlock(x - 1, y + 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
-	float a10 = calcAO(getBlock(x, y - 1, z - 1).visible, getBlock(x + 1, y, z - 1).visible, getBlock(x + 1, y - 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
-	float a11 = calcAO(getBlock(x, y + 1, z - 1).visible, getBlock(x + 1, y, z - 1).visible, getBlock(x + 1, y + 1, z - 1).visible, adjacentBlock.visible) / 3.0f;
-	a00 = map(a00);
-	a01 = map(a01);
-	a11 = map(a11);
-	a10 = map(a10);
-
-	if(a00 + a11 > a01 + a10) {
-		// Generate normal quad
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 4);
-		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b, 4);
-		m_vertices.emplace_back(x + 1, y + 1, z, a11 * r, a11 * g, a11 * b, 4);
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 4);
-		m_vertices.emplace_back(x + 1, y + 1, z, a11 * r, a11 * g, a11 * b, 4);
-		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b, 4);
-	} else {
-		// Generate flipped quad
-		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b, 4);
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 4);
-		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b, 4);
-		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b, 4);
-		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b, 4);
-		m_vertices.emplace_back(x + 1, y + 1, z, a11 * r, a11 * g, a11 * b, 4);
-	}
+	m_vertices.emplace_back(x, y, z, r, g, b, 4);
+	m_vertices.emplace_back(x, y + 1, z, r, g, b, 4);
+	m_vertices.emplace_back(x + 1, y + 1, z, r, g, b, 4);
+	m_vertices.emplace_back(x, y, z, r, g, b, 4);
+	m_vertices.emplace_back(x + 1, y + 1, z, r, g, b, 4);
+	m_vertices.emplace_back(x + 1, y, z, r, g, b, 4);
 }
 
 void World::addBackFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x, y, z + 1);
 	if(adjacentBlock.visible) return;
 
-	float a00 = calcAO(getBlock(x - 1, y, z + 1).visible, getBlock(x, y - 1, z + 1).visible, getBlock(x - 1, y - 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
-	float a01 = calcAO(getBlock(x - 1, y, z + 1).visible, getBlock(x, y + 1, z + 1).visible, getBlock(x - 1, y + 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
-	float a10 = calcAO(getBlock(x, y - 1, z + 1).visible, getBlock(x + 1, y, z + 1).visible, getBlock(x + 1, y - 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
-	float a11 = calcAO(getBlock(x, y + 1, z + 1).visible, getBlock(x + 1, y, z + 1).visible, getBlock(x + 1, y + 1, z + 1).visible, adjacentBlock.visible) / 3.0f;
-	a00 = map(a00);
-	a01 = map(a01);
-	a11 = map(a11);
-	a10 = map(a10);
-
-	if(a00 + a11 > a01 + a10) {
-		// Generate normal quad
-		m_vertices.emplace_back(x, y, z + 1, a00 * r, a00 * g, a00 * b, 5);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 5);
-		m_vertices.emplace_back(x, y + 1, z + 1, a01 * r, a01 * g, a01 * b, 5);
-		m_vertices.emplace_back(x, y, z + 1, a00 * r, a00 * g, a00 * b, 5);
-		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b, 5);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 5);
-	} else {
-		// Generate a flipped quad
-		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b, 5);
-		m_vertices.emplace_back(x, y + 1, z + 1, a01 * r, a01 * g, a01 * b, 5);
-		m_vertices.emplace_back(x, y, z + 1, a00 * r, a00 * g, a00 * b, 5);
-		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b, 5);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 5);
-		m_vertices.emplace_back(x, y + 1, z + 1, a01 * r, a01 * g, a01 * b, 5);
-	}
+	m_vertices.emplace_back(x, y, z + 1, r, g, b, 5);
+	m_vertices.emplace_back(x + 1, y + 1, z + 1, r, g, b, 5);
+	m_vertices.emplace_back(x, y + 1, z + 1, r, g, b, 5);
+	m_vertices.emplace_back(x, y, z + 1, r, g, b, 5);
+	m_vertices.emplace_back(x + 1, y, z + 1, r, g, b, 5);
+	m_vertices.emplace_back(x + 1, y + 1, z + 1, r, g, b, 5);
 }
