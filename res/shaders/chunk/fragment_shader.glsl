@@ -31,7 +31,7 @@ float ShadowCalculation()
     shadow /= 25.0;
 
     return shadow;
-}  
+}
 
 void main() {
 	float shadow = ShadowCalculation();

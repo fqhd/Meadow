@@ -29,7 +29,9 @@ void main() {
 		out_color = vec4(color[0].rgb, color[0].a * a);
 	}else if(type == 1){
 		out_color = vec4(hsv2rgb(vec3(uv.x, 1.0, 1.0)), 1.0);
-	}else{
+	}else if(type == 2){
 		out_color = biLerp(color[0], color[1], color[2], color[3], uv.x, uv.y);
+	}else if(type == 3) {
+		out_color = vec4(texture(ourTexture, uv).rgb, 1.0);
 	}
 }
