@@ -6,6 +6,7 @@
 #include "GameState.hpp"
 #include "GBuffer.hpp"
 #include "SSAO.hpp"
+#include "FXAA.hpp"
 #include "SSAOBlur.hpp"
 #include "MasterRenderer.hpp"
 
@@ -25,6 +26,6 @@ public:
 	Camera camera;
 	SSAOBlur ssaoblur;
 	MasterRenderer renderer;
-	
+	FXAA fxaa;
 
 };

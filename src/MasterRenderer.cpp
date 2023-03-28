@@ -11,9 +11,24 @@ void MasterRenderer::init() {
 	shader.loadUniform("gAlbedo", 2);
 	shader.loadUniform("ssao", 3);
 	shader.loadUniform("depthmap", 4);
+
+
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WINDOW_WIDTH, WINDOW_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glGenVertexArrays(1, &vao);
 }
 
-void MasterRenderer::render(GBuffer* gbuffer, ShadowMap* smap, GLuint ssao, Camera* camera) {
+void MasterRenderer::generate(GBuffer* gbuffer, ShadowMap* smap, GLuint ssao, Camera* camera) {
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glClear(GL_COLOR_BUFFER_BIT);
+
 	shader.bind();
 
 	shader.loadUniform("lightPos", smap->lightPos * 10000.0f);
@@ -37,4 +52,6 @@ void MasterRenderer::render(GBuffer* gbuffer, ShadowMap* smap, GLuint ssao, Came
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

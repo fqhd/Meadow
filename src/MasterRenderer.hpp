@@ -5,13 +5,16 @@
 #include "GBuffer.hpp"
 #include "ShadowMap.hpp"
 #include "Camera.hpp"
+#include "Window.hpp"
 
 class MasterRenderer {
 public:
 
 	void init();
-	void render(GBuffer* gbuffer, ShadowMap* smap, GLuint ssao, Camera* camera);
+	void generate(GBuffer* gbuffer, ShadowMap* smap, GLuint ssao, Camera* camera);
 
 	Shader shader;
+	GLuint texture;
+	GLuint fbo;
 
 };

@@ -12,6 +12,7 @@ void Game::init() {
 	ssao.init();
 	ssaoblur.init();
 	renderer.init();
+	fxaa.init();
 }
 
 void Game::update(float dt, GameState& state) {
@@ -31,9 +32,12 @@ void Game::render() {
 	shadowmap.generateShadowMap(&world);
 	gbuffer.populateGBuffer(&world, &camera);
 	ssao.generateSSAOTexture(gbuffer.gPosition, gbuffer.gNormal, camera.getProjectionMatrix());
+	
 	ssaoblur.blurTexture(ssao.ssaoTexture);
 
-	renderer.render(&gbuffer, &shadowmap, ssaoblur.blurredTexture, &camera);
+	renderer.generate(&gbuffer, &shadowmap, ssaoblur.blurredTexture, &camera);
+
+	fxaa.render(renderer.texture);
 
 	// Crosshair
 	GUIRenderer::drawRect(glm::vec4(956, 536, 8, 8), ColorRGBA8(0, 0, 0));
