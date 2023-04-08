@@ -77,7 +77,6 @@ void World::save() {
 void World::updateMeshes(){
 	if (chunk.needsMeshUpdate) {
 		m_vertices.clear();
-		std::cout << "chunk" << std::endl;
 		generateMesh();
 		chunk.pushData(m_vertices.data(), m_vertices.size());
 		chunk.needsMeshUpdate = false;

@@ -18,14 +18,6 @@ void Game::update(float dt, GameState& state) {
 	player.update(dt);
 	camera.setPosition(player.getEyePos());
 	camera.update();
-
-	t += dt;
-	frames++;
-	if (t >= 1.0) {
-		std::cout << frames << std::endl;
-		frames = 0;
-		t = 0.0;
-	}
 }
 
 void Game::render() {

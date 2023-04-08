@@ -19,7 +19,4 @@ public:
 	World world;
 	Player player;
 	Camera camera;
-	float t;
-	int frames = 0;
-
 };
