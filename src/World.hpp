@@ -3,6 +3,7 @@
 #include "Chunk.hpp"
 #include "Camera.hpp"
 #include <cstdint>
+#include "Shader.hpp"
 
 struct Block {
 	Block(){}
@@ -28,6 +29,7 @@ public:
 	void destroy();
 	std::string getName();
 	void updateMeshes();
+	void render(Camera& camera, GLuint depthmap, const glm::mat4& lightSpaceMatrix, const glm::vec3& lightPos);
 
 	int load(const std::string& path);
 	void save();
@@ -53,5 +55,7 @@ private:
 	Block* m_data = nullptr;
 	std::string m_name;
 	GLuint textureArray;
+	Shader m_shader;
+
 
 };

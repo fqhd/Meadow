@@ -4,11 +4,8 @@
 #include "ShadowMap.hpp"
 #include "Camera.hpp"
 #include "GameState.hpp"
-#include "GBuffer.hpp"
-#include "SSAO.hpp"
-#include "FXAA.hpp"
-#include "SSAOBlur.hpp"
-#include "MasterRenderer.hpp"
+#include <chrono>
+
 
 class Game {
 public:
@@ -21,11 +18,8 @@ public:
 	ShadowMap shadowmap;
 	World world;
 	Player player;
-	GBuffer gbuffer;
-	SSAO ssao;
 	Camera camera;
-	SSAOBlur ssaoblur;
-	MasterRenderer renderer;
-	FXAA fxaa;
+	float t;
+	int frames = 0;
 
 };

@@ -36,6 +36,7 @@ void Window::create() {
 		return;
 	}
 
+
 	// Create GL context
 	glfwMakeContextCurrent(window);
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -62,6 +63,8 @@ void Window::create() {
 
 	// Changing the line width(for block outline)
 	glLineWidth(1.0f);
+
+	glfwSwapInterval(0);
 }
 
 GLFWwindow* Window::getWindowPtr() {

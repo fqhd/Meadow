@@ -5,6 +5,7 @@ void World::init(){
 	m_data = new Block[CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH];
 	memset(m_data, 0, sizeof(Block) * CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH);
 	chunk.init();
+	m_shader.load("chunk");
 }
 
 void World::createNew(const std::string& name) {
@@ -21,6 +22,22 @@ void World::destroy(){
 	chunk.destroy();
 	delete[] m_data;
 }
+
+void World::render(Camera& camera, GLuint depthmap, const glm::mat4& lightSpaceMatrix, const glm::vec3& lightPos) {
+	m_shader.bind();
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, depthmap);
+	m_shader.loadUniform("lightPos", lightPos);
+	m_shader.loadUniform("lightSpaceMatrix", lightSpaceMatrix);
+	m_shader.loadUniform("projection", camera.getProjectionMatrix());
+	m_shader.loadUniform("view", camera.getViewMatrix());
+
+	chunk.render();
+
+	m_shader.unbind();
+}
+
 
 int World::load(const std::string& name) {
 	m_name = name;
@@ -60,6 +77,7 @@ void World::save() {
 void World::updateMeshes(){
 	if (chunk.needsMeshUpdate) {
 		m_vertices.clear();
+		std::cout << "chunk" << std::endl;
 		generateMesh();
 		chunk.pushData(m_vertices.data(), m_vertices.size());
 		chunk.needsMeshUpdate = false;
@@ -110,11 +128,11 @@ std::string World::getName() {
 
 void World::addBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
 	addTopFace(x, y, z, r, g, b);
-	addBottomFace(x, y, z, r, g, b);
-	addLeftFace(x, y, z, r, g, b);
-	addRightFace(x, y, z, r, g, b);
-	addFrontFace(x, y, z, r, g, b);
-	addBackFace(x, y, z, r, g, b);
+	addBottomFace(x, y, z, r * 0.90, g * 0.90, b * 0.90);
+	addLeftFace(x, y, z, r * 0.94, g * 0.94, b * 0.94);
+	addRightFace(x, y, z, r * 0.98, g * 0.98, b * 0.98);
+	addFrontFace(x, y, z, r * 0.96, g * 0.96, b * 0.96);
+	addBackFace(x, y, z, r * 0.92, g * 0.92, b * 0.92);
 }
 
 unsigned int calcAO(bool side1, bool side2, bool corner, bool face){
@@ -126,7 +144,7 @@ unsigned int calcAO(bool side1, bool side2, bool corner, bool face){
 }
 
 float map(float ao) {
-	return 1.0 + ao * 0.0;
+	return 0.6 + ao * 0.4;
 }
 
 void World::addTopFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){

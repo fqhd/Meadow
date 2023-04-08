@@ -1,6 +1,6 @@
 #include "ShadowMap.hpp"
 
-const int width = 8192;
+const int width = 4092;
 
 void ShadowMap::init() {
     lightPos = glm::vec3(15, 18, 16);
