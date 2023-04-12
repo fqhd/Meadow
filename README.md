@@ -6,5 +6,5 @@ A very simple and self explanatory tool to make voxel art in first person perspe
   - Block Outline
   - Skybox
   - Sprinting with CTRL
-  - Screen resize(Fix pause menu hotbar mouseclick select bug)
+  - Screen resize(fix selecting hotbar in pause menu bug)
   - Pick block color with mouse middle click
