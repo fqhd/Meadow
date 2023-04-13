@@ -5,6 +5,7 @@
 #include "Camera.hpp"
 #include "GameState.hpp"
 #include "BlockOutline.hpp"
+#include "Skybox.hpp"
 #include <chrono>
 
 
@@ -21,4 +22,6 @@ public:
 	Player player;
 	Camera camera;
 	BlockOutline outline;
+	Skybox skybox;
+
 };
