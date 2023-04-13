@@ -37,7 +37,7 @@ void PauseMenu::render(Hotbar* hotbar) {
 	for (int i = 0; i < 9; i++) {
 		GUIRenderer::drawRect(glm::vec4(608 + i*80, 350, 64, 64), hotbar->colors[i]);
 		if (InputManager::isKeyDown(GLFW_MOUSE_BUTTON_1)) {
-			if (Utils::isInside(InputManager::getMousePosition(), glm::vec4(608 + i * 80, 350, 64, 64))) {
+			if (Utils::isInside(InputManager::getScaledMousePosition(), glm::vec4(608 + i * 80, 350, 64, 64))) {
 				selectedSlot = i;
 			}
 		}
