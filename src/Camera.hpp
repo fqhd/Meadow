@@ -19,7 +19,7 @@ public:
 	void setForward(const glm::vec3&);
 	void setPosition(const glm::vec3& vec);
 
-	float mouseSensitivity = 1.0f;
+	float mouseSensitivity = 0.12f;
 
 private:
 

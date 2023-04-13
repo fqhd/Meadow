@@ -6,7 +6,6 @@ void Game::init() {
 	world.init();
 	camera.init(WINDOW_WIDTH, WINDOW_HEIGHT);
 	player.init(&camera, &world);
-	camera.mouseSensitivity = 0.2f;
 	outline.init();
 	skybox.init();
 }
