@@ -23,8 +23,9 @@ int main() {
 	double before = glfwGetTime();
 	while (gamestate != GameState::Exit) {
 		Window::clear();
-		double dt = glfwGetTime() - before;
-		before = glfwGetTime();
+		double nowTime = glfwGetTime();
+		double dt = nowTime - before;
+		before = nowTime;
 		if (!InputManager::processInput()) gamestate = GameState::Exit;
 
 		if (gamestate == GameState::Game) {

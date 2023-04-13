@@ -63,6 +63,8 @@ void Window::create() {
 
 	// Changing the line width(for block outline)
 	glLineWidth(1.0f);
+
+	glfwSwapInterval(1);
 }
 
 GLFWwindow* Window::getWindowPtr() {
