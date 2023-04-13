@@ -5,7 +5,6 @@
 
 const unsigned int PRECISION = 50;
 const unsigned int REACH_DISTANCE = 5;
-const float SPEED = 4.0f;
 
 void Player::init(Camera* camera, World* world) {
 	m_camera = camera;
@@ -36,27 +35,33 @@ void Player::placeAndBreakBlocks() {
 
 
 void Player::movement(float deltaTime) {
+	if (sprinting) {
+		speed = 12.0f;
+	}
+	else {
+		speed = 4.0f;
+	}
 	glm::vec3 camForward = m_camera->getForward();
 	glm::vec3 forward = glm::normalize(glm::vec3(camForward.x, 0.0f, camForward.z));
 	glm::vec3 side = glm::normalize(glm::cross(camForward, glm::vec3(0.0f, 1.0f, 0.0f)));
 
 	if (InputManager::isKeyDown(GLFW_KEY_W)) {
-		position += forward * SPEED * deltaTime;
+		position += forward * speed * deltaTime;
 	}
 	if (InputManager::isKeyDown(GLFW_KEY_S)) {
-		position -= forward * SPEED * deltaTime;
+		position -= forward * speed * deltaTime;
 	}
 	if (InputManager::isKeyDown(GLFW_KEY_A)) {
-		position -= side * SPEED * deltaTime;
+		position -= side * speed * deltaTime;
 	}
 	if (InputManager::isKeyDown(GLFW_KEY_D)) {
-		position += side * SPEED * deltaTime;
+		position += side * speed * deltaTime;
 	}
 	if (InputManager::isKeyDown(GLFW_KEY_SPACE)) {
-		position.y += SPEED * deltaTime;
+		position.y += speed * deltaTime;
 	}
 	if (InputManager::isKeyDown(GLFW_KEY_LEFT_SHIFT)) {
-		position.y -= SPEED * deltaTime;
+		position.y -= speed * deltaTime;
 	}
 }
 

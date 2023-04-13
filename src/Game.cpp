@@ -23,6 +23,9 @@ void Game::update(float dt, GameState& state) {
 }
 
 void Game::render() {
+	if (InputManager::isKeyPressed(GLFW_KEY_LEFT_CONTROL)) {
+		player.sprinting = !player.sprinting;
+	}
 	world.updateMeshes();
 	skybox.render(camera);
 	world.render(camera, shadowmap.texture, shadowmap.lightSpaceMatrix, shadowmap.lightPos);

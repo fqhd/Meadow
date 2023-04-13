@@ -21,6 +21,8 @@ public:
 	Hotbar hotbar;
 	VisibleBlocks visibleBlocks;
 	glm::vec3 position;
+	bool sprinting = false;
+	float speed = 4.0f;
 
 private:
 
