@@ -7,6 +7,7 @@ void Game::init() {
 	camera.init(WINDOW_WIDTH, WINDOW_HEIGHT);
 	player.init(&camera, &world);
 	camera.mouseSensitivity = 0.2f;
+	outline.init();
 }
 
 void Game::update(float dt, GameState& state) {
@@ -24,6 +25,9 @@ void Game::render() {
 	world.updateMeshes();
 
 	world.render(camera, shadowmap.texture, shadowmap.lightSpaceMatrix, shadowmap.lightPos);
+	if (player.visibleBlocks.lookingAtBlock) {
+		outline.render(camera, player);
+	}
 
 	GUIRenderer::drawRect(glm::vec4(956, 536, 8, 8), ColorRGBA8(0, 0, 0));
 	player.hotbar.render();

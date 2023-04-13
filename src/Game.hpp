@@ -4,6 +4,7 @@
 #include "ShadowMap.hpp"
 #include "Camera.hpp"
 #include "GameState.hpp"
+#include "BlockOutline.hpp"
 #include <chrono>
 
 
@@ -19,4 +20,5 @@ public:
 	World world;
 	Player player;
 	Camera camera;
+	BlockOutline outline;
 };
