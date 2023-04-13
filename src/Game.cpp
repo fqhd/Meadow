@@ -26,6 +26,12 @@ void Game::render() {
 	if (InputManager::isKeyPressed(GLFW_KEY_LEFT_CONTROL)) {
 		player.sprinting = !player.sprinting;
 	}
+	if (InputManager::isKeyPressed(GLFW_MOUSE_BUTTON_3)) {
+		glm::ivec3 blockPos = player.visibleBlocks.breakableBlock;
+		Block block = world.getBlock(blockPos.x, blockPos.y, blockPos.z);
+		ColorRGBA8 color(block.r, block.g, block.b);
+		player.hotbar.colors[player.hotbar.selectorIndex] = color;
+	}
 	world.updateMeshes();
 	skybox.render(camera);
 	world.render(camera, shadowmap.texture, shadowmap.lightSpaceMatrix, shadowmap.lightPos);
