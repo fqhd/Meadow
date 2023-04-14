@@ -17,7 +17,7 @@ int main() {
 	PauseMenu pausemenu;
 	pausemenu.init(&game.world);
 	MainMenu mainmenu;
-	mainmenu.init(&game.world);
+	mainmenu.init(&game);
 	GameState gamestate = GameState::MainMenu;
 
 	double before = glfwGetTime();

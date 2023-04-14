@@ -46,14 +46,20 @@ void Game::render() {
 		ColorRGBA8 color(block.r, block.g, block.b);
 		player.hotbar.colors[player.hotbar.selectorIndex] = color;
 	}
+	if (InputManager::isKeyPressed(GLFW_KEY_H)) {
+		toggleHud = !toggleHud;
+	}
 	world.updateMeshes();
 	skybox.render(camera);
 	world.render(camera, shadowmap.texture, shadowmap.lightSpaceMatrix, shadowmap.lightPos);
 	if (player.visibleBlocks.lookingAtBlock) {
 		outline.render(camera, player);
 	}
-	GUIRenderer::drawRect(glm::vec4(956, 536, 8, 8), ColorRGBA8(0, 0, 0));
-	player.hotbar.render();
+	
+	if (toggleHud) {
+		GUIRenderer::drawRect(glm::vec4(956, 536, 8, 8), ColorRGBA8(0, 0, 0));
+		player.hotbar.render();
+	}
 }
 
 void Game::destroy() {

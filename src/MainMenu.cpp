@@ -3,8 +3,8 @@
 
 const int BUTTON_WIDTH = 300;
 
-void MainMenu::init(World* world) {
-	m_world = world;
+void MainMenu::init(Game* g) {
+	game = g;
 	createButton.init(glm::vec4(410, 200, 500, 200), ColorRGBA8(197, 255, 71, 255));
 	loadButton.init(glm::vec4(1010, 200, 500, 200), ColorRGBA8(197, 255, 71, 255));
 	input.init(glm::vec4(560, 500, 800, 200.0f));
@@ -17,8 +17,14 @@ void MainMenu::update(float dt, GameState& state) {
 
 	if (createButton.isPressed()) {
 		if (input.text != "") {
-			m_world->createNew(input.text);
+			game->world.createNew(input.text);
+			for (int i = 0; i < 9; i++) {
+				game->player.hotbar.colors[i] = ColorRGBA8();
+			}
+			game->player.position = glm::vec3(CHUNK_WIDTH / 2, 1, CHUNK_WIDTH / 2);
+			game->world.blockOffset = glm::ivec3(CHUNK_WIDTH * 1024);
 			InputManager::setMouseGrabbed(true);
+			
 			state = GameState::Game;
 			input.text = "";
 			m_errorMsg = "";
@@ -29,7 +35,7 @@ void MainMenu::update(float dt, GameState& state) {
 	}
 
 	if (loadButton.isPressed()) {
-		if (m_world->load(input.text) == -1) {
+		if (game->world.load(input.text) == -1) {
 			m_errorMsg = "Could not find world with name: " + input.text;
 		}
 		else {

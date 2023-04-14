@@ -23,5 +23,6 @@ public:
 	Camera camera;
 	BlockOutline outline;
 	Skybox skybox;
+	bool toggleHud = true;
 
 };

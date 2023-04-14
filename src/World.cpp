@@ -60,19 +60,28 @@ int World::load(const std::string& name) {
 
 void World::save() {
 	std::string path = "worlds/" + m_name;
+	Block* tmp = new Block[CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH];
+	for (int y = 0; y < CHUNK_WIDTH; y++) {
+		for (int z = 0; z < CHUNK_WIDTH; z++) {
+			for (int x = 0; x < CHUNK_WIDTH; x++) {
+				tmp[y * CHUNK_WIDTH * CHUNK_WIDTH + z * CHUNK_WIDTH + x] = getBlock(x, y, z);
+			}
+		}
+	}
 	std::ofstream file(path, std::ios::out | std::ios::binary);
 	if (!file.good()) {
 		std::cerr << "could not open " << path << " file for writing" << std::endl;
 		return;
 	}
 	for (int i = 0; i < CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH; i++) {
-		file.write((char*)&m_data[i], sizeof(Block));
+		file.write((char*)&tmp[i], sizeof(Block));
 	}
 	file.close();
 	if(!file.good()) {
       	std::cerr << "Error occurred at writing time!" << std::endl;
 		return;
   	}
+	delete[] tmp;
 }
 
 void World::updateMeshes(){
