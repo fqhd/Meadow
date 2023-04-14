@@ -16,6 +16,21 @@ void Game::update(float dt, GameState& state) {
 		InputManager::setMouseGrabbed(false);
 	}
 
+	if (InputManager::isKeyPressed(GLFW_KEY_I)) {
+		world.blockOffset.x += 1;
+	}
+	if (InputManager::isKeyPressed(GLFW_KEY_J)) {
+		world.blockOffset.z -= 1;
+	}
+	if (InputManager::isKeyPressed(GLFW_KEY_K)) {
+		world.blockOffset.x -= 1;
+	}
+	if (InputManager::isKeyPressed(GLFW_KEY_L)) {
+		world.blockOffset.z += 1;
+	}
+
+	world.chunk.needsMeshUpdate = true;
+
 	player.update(dt);
 	camera.setPosition(player.getEyePos());
 	camera.update();

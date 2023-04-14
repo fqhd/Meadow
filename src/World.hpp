@@ -34,6 +34,8 @@ public:
 	int load(const std::string& path);
 	void save();
 
+	glm::ivec3 blockOffset;
+
 	Chunk chunk;
 
 private:

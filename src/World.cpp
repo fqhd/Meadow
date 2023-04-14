@@ -6,6 +6,7 @@ void World::init(){
 	memset(m_data, 0, sizeof(Block) * CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH);
 	chunk.init();
 	m_shader.load("chunk");
+	blockOffset = glm::ivec3(CHUNK_WIDTH*1024);
 }
 
 void World::createNew(const std::string& name) {
@@ -105,9 +106,12 @@ bool World::isBlockInLocalWorld(int _x, int _y, int _z){
 }
 
 Block World::getBlock(int _x, int _y, int _z){
-	if(!isBlockInLocalWorld(_x, _y, _z)){
+	if (!isBlockInLocalWorld(_x, _y, _z)) {
 		return Block(0, 0, 0, false);
 	}
+	_x = (_x + blockOffset.x) % CHUNK_WIDTH;
+	_y = (_y + blockOffset.y) % CHUNK_WIDTH;
+	_z = (_z + blockOffset.z) % CHUNK_WIDTH;
 
 	return m_data[(_y * CHUNK_WIDTH * CHUNK_WIDTH) + (_z * CHUNK_WIDTH) + _x];
 }
@@ -116,6 +120,10 @@ void World::setBlock(int x, int y, int z, Block block) {
 	if(!isBlockInLocalWorld(x, y, z)){
 		return;
 	}
+
+	x = (x + blockOffset.x) % CHUNK_WIDTH;
+	y = (y + blockOffset.y) % CHUNK_WIDTH;
+	z = (z + blockOffset.z) % CHUNK_WIDTH;
 
 	m_data[(y * CHUNK_WIDTH * CHUNK_WIDTH) + (z * CHUNK_WIDTH) + x] = block;
 	chunk.needsMeshUpdate = true;
