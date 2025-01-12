@@ -4,10 +4,15 @@
 const int BUTTON_WIDTH = 300;
 
 void MainMenu::init(Game* g) {
+	std::cout << "hi" << std::endl;
 	game = g;
+	std::cout << "hi" << std::endl;
 	createButton.init(glm::vec4(410, 200, 500, 200), ColorRGBA8(197, 255, 71, 255));
+	std::cout << "hi" << std::endl;
 	loadButton.init(glm::vec4(1010, 200, 500, 200), ColorRGBA8(197, 255, 71, 255));
+	std::cout << "hi" << std::endl;
 	input.init(glm::vec4(560, 500, 800, 200.0f));
+	std::cout << "Finished Initialized Main Menu" << std::endl;
 }
 
 void MainMenu::update(float dt, GameState& state) {

@@ -47,6 +47,9 @@ void GUIRenderer::drawRect(const glm::vec4& destRect, const ColorRGBA8& color) {
 	shader.loadUniform("color[1]", color);
 	shader.loadUniform("color[2]", color);
 	shader.loadUniform("color[3]", color);
+	shader.loadUniform("ourTexture", 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_font_texture);
 	glBindVertexArray(vao);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
@@ -60,6 +63,7 @@ void GUIRenderer::drawRect(const glm::vec4& destRect, GLuint texture) {
 	shader.loadUniform("type", 3);
 	shader.loadUniform("destRect", destRect);
 	shader.loadUniform("uvRect", glm::vec4(0.0, 0.0, 1.0, 1.0));
+	shader.loadUniform("ourTexture", 0);
 	glBindVertexArray(vao);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
@@ -111,6 +115,7 @@ void GUIRenderer::drawText(const std::string& s, const glm::vec2& position, cons
 
 	shader.bind();
 	glBindVertexArray(vao);
+	shader.loadUniform("ourTexture", 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_font_texture);
 	glDisable(GL_CULL_FACE);

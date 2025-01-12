@@ -11,9 +11,9 @@ uniform sampler2D ourTexture;
 
 vec4 biLerp(vec4 a, vec4 b, vec4 c, vec4 d, float s, float t)
 {
-  vec4 x = mix(a, b, t);
-  vec4 y = mix(c, d, t);
-  return mix(x, y, s);
+	vec4 x = mix(a, b, t);
+	vec4 y = mix(c, d, t);
+	return mix(x, y, s);
 }
 
 vec3 hsv2rgb(vec3 c)
