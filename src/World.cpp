@@ -178,20 +178,20 @@ void World::addTopFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GL
 
 	if(a00 + a11 > a01 + a10) {
 		// Generate normal quad
-		m_vertices.emplace_back(x, y + 1, z, a00*r, a00*g, a00*b, 0);
-		m_vertices.emplace_back(x, y + 1, z + 1, a01*r, a01*g, a01*b, 0);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11*r, a11*g, a11*b, 0);
-		m_vertices.emplace_back(x, y + 1, z, a00*r, a00*g, a00*b, 0);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 0);
-		m_vertices.emplace_back(x + 1, y + 1, z, a10 * r, a10 * g, a10 * b, 0);
+		m_vertices.emplace_back(x, y + 1, z, a00*r, a00*g, a00*b);
+		m_vertices.emplace_back(x, y + 1, z + 1, a01*r, a01*g, a01*b);
+		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11*r, a11*g, a11*b);
+		m_vertices.emplace_back(x, y + 1, z, a00*r, a00*g, a00*b);
+		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b);
+		m_vertices.emplace_back(x + 1, y + 1, z, a10 * r, a10 * g, a10 * b);
 	} else {
 		// Generate flipped quad
-		m_vertices.emplace_back(x + 1, y + 1, z, a10 * r, a10 * g, a10 * b, 0);
-		m_vertices.emplace_back(x, y + 1, z, a00 * r, a00 * g, a00 * b, 0);
-		m_vertices.emplace_back(x, y + 1, z + 1, a01 * r, a01 * g, a01 * b, 0);
-		m_vertices.emplace_back(x + 1, y + 1, z, a10 * r, a10 * g, a10 * b, 0);
-		m_vertices.emplace_back(x, y + 1, z + 1, a01 * r, a01 * g, a01 * b, 0);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 0);
+		m_vertices.emplace_back(x + 1, y + 1, z, a10 * r, a10 * g, a10 * b);
+		m_vertices.emplace_back(x, y + 1, z, a00 * r, a00 * g, a00 * b);
+		m_vertices.emplace_back(x, y + 1, z + 1, a01 * r, a01 * g, a01 * b);
+		m_vertices.emplace_back(x + 1, y + 1, z, a10 * r, a10 * g, a10 * b);
+		m_vertices.emplace_back(x, y + 1, z + 1, a01 * r, a01 * g, a01 * b);
+		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b);
 	}
 }
 
@@ -210,21 +210,21 @@ void World::addBottomFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g,
 
 	if(a00 + a11 > a01 + a10) {
 		// Generate normal quad
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 1);
-		m_vertices.emplace_back(x + 1, y, z + 1, a11 * r, a11 * g, a11 * b, 1);
-		m_vertices.emplace_back(x, y, z + 1, a01 * r, a01 * g, a01 * b, 1);
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 1);
-		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b, 1);
-		m_vertices.emplace_back(x + 1, y, z + 1, a11 * r, a11 * g, a11 * b, 1);
+		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b);
+		m_vertices.emplace_back(x + 1, y, z + 1, a11 * r, a11 * g, a11 * b);
+		m_vertices.emplace_back(x, y, z + 1, a01 * r, a01 * g, a01 * b);
+		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b);
+		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b);
+		m_vertices.emplace_back(x + 1, y, z + 1, a11 * r, a11 * g, a11 * b);
 
 	} else {
 		// Generate flipped quad
-		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b, 1);
-		m_vertices.emplace_back(x, y, z + 1, a01 * r, a01 * g, a01 * b, 1);
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 1);
-		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b, 1);
-		m_vertices.emplace_back(x + 1, y, z + 1, a11 * r, a11 * g, a11 * b, 1);
-		m_vertices.emplace_back(x, y, z + 1, a01 * r, a01 * g, a01 * b, 1);
+		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b);
+		m_vertices.emplace_back(x, y, z + 1, a01 * r, a01 * g, a01 * b);
+		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b);
+		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b);
+		m_vertices.emplace_back(x + 1, y, z + 1, a11 * r, a11 * g, a11 * b);
+		m_vertices.emplace_back(x, y, z + 1, a01 * r, a01 * g, a01 * b);
 	}
 }
 
@@ -243,20 +243,20 @@ void World::addRightFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, 
 
 	if(a00 + a11 > a01 + a10) {
 		// Generate normal quad
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 2);
-		m_vertices.emplace_back(x, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 2);
-		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b, 2);
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 2);
-		m_vertices.emplace_back(x, y, z + 1, a10 * r, a10 * g, a10 * b, 2);
-		m_vertices.emplace_back(x, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 2);
+		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b);
+		m_vertices.emplace_back(x, y + 1, z + 1, a11 * r, a11 * g, a11 * b);
+		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b);
+		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b);
+		m_vertices.emplace_back(x, y, z + 1, a10 * r, a10 * g, a10 * b);
+		m_vertices.emplace_back(x, y + 1, z + 1, a11 * r, a11 * g, a11 * b);
 	} else {
 		// Generate flipped quad
-		m_vertices.emplace_back(x, y, z + 1, a10 * r, a10 * g, a10 * b, 2);
-		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b, 2);
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 2);
-		m_vertices.emplace_back(x, y, z + 1, a10 * r, a10 * g, a10 * b, 2);
-		m_vertices.emplace_back(x, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 2);
-		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b, 2);
+		m_vertices.emplace_back(x, y, z + 1, a10 * r, a10 * g, a10 * b);
+		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b);
+		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b);
+		m_vertices.emplace_back(x, y, z + 1, a10 * r, a10 * g, a10 * b);
+		m_vertices.emplace_back(x, y + 1, z + 1, a11 * r, a11 * g, a11 * b);
+		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b);
 	}
 }
 
@@ -275,20 +275,20 @@ void World::addLeftFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, G
 
 	if(a00 + a11 > a01 + a10) {
 		// Generate normal quad
-		m_vertices.emplace_back(x + 1, y, z, a00 * r, a00 * g, a00 * b, 3);
-		m_vertices.emplace_back(x + 1, y + 1, z, a01 * r, a01 * g, a01 * b, 3);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 3);
-		m_vertices.emplace_back(x + 1, y, z, a00 * r, a00 * g, a00 * b, 3);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 3);
-		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b, 3);
+		m_vertices.emplace_back(x + 1, y, z, a00 * r, a00 * g, a00 * b);
+		m_vertices.emplace_back(x + 1, y + 1, z, a01 * r, a01 * g, a01 * b);
+		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b);
+		m_vertices.emplace_back(x + 1, y, z, a00 * r, a00 * g, a00 * b);
+		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b);
+		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b);
 	} else {
 		// Generate flipped quad
-		m_vertices.emplace_back(x + 1, y + 1, z, a01 * r, a01 * g, a01 * b, 3);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 3);
-		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b, 3);
-		m_vertices.emplace_back(x + 1, y + 1, z, a01 * r, a01 * g, a01 * b, 3);
-		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b, 3);
-		m_vertices.emplace_back(x + 1, y, z, a00 * r, a00 * g, a00 * b, 3);
+		m_vertices.emplace_back(x + 1, y + 1, z, a01 * r, a01 * g, a01 * b);
+		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b);
+		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b);
+		m_vertices.emplace_back(x + 1, y + 1, z, a01 * r, a01 * g, a01 * b);
+		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b);
+		m_vertices.emplace_back(x + 1, y, z, a00 * r, a00 * g, a00 * b);
 	}
 }
 
@@ -307,20 +307,20 @@ void World::addFrontFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, 
 
 	if(a00 + a11 > a01 + a10) {
 		// Generate normal quad
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 4);
-		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b, 4);
-		m_vertices.emplace_back(x + 1, y + 1, z, a11 * r, a11 * g, a11 * b, 4);
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 4);
-		m_vertices.emplace_back(x + 1, y + 1, z, a11 * r, a11 * g, a11 * b, 4);
-		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b, 4);
+		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b);
+		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b);
+		m_vertices.emplace_back(x + 1, y + 1, z, a11 * r, a11 * g, a11 * b);
+		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b);
+		m_vertices.emplace_back(x + 1, y + 1, z, a11 * r, a11 * g, a11 * b);
+		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b);
 	} else {
 		// Generate flipped quad
-		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b, 4);
-		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b, 4);
-		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b, 4);
-		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b, 4);
-		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b, 4);
-		m_vertices.emplace_back(x + 1, y + 1, z, a11 * r, a11 * g, a11 * b, 4);
+		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b);
+		m_vertices.emplace_back(x, y, z, a00 * r, a00 * g, a00 * b);
+		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b);
+		m_vertices.emplace_back(x + 1, y, z, a10 * r, a10 * g, a10 * b);
+		m_vertices.emplace_back(x, y + 1, z, a01 * r, a01 * g, a01 * b);
+		m_vertices.emplace_back(x + 1, y + 1, z, a11 * r, a11 * g, a11 * b);
 	}
 }
 
@@ -339,19 +339,19 @@ void World::addBackFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, G
 
 	if(a00 + a11 > a01 + a10) {
 		// Generate normal quad
-		m_vertices.emplace_back(x, y, z + 1, a00 * r, a00 * g, a00 * b, 5);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 5);
-		m_vertices.emplace_back(x, y + 1, z + 1, a01 * r, a01 * g, a01 * b, 5);
-		m_vertices.emplace_back(x, y, z + 1, a00 * r, a00 * g, a00 * b, 5);
-		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b, 5);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 5);
+		m_vertices.emplace_back(x, y, z + 1, a00 * r, a00 * g, a00 * b);
+		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b);
+		m_vertices.emplace_back(x, y + 1, z + 1, a01 * r, a01 * g, a01 * b);
+		m_vertices.emplace_back(x, y, z + 1, a00 * r, a00 * g, a00 * b);
+		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b);
+		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b);
 	} else {
 		// Generate a flipped quad
-		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b, 5);
-		m_vertices.emplace_back(x, y + 1, z + 1, a01 * r, a01 * g, a01 * b, 5);
-		m_vertices.emplace_back(x, y, z + 1, a00 * r, a00 * g, a00 * b, 5);
-		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b, 5);
-		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b, 5);
-		m_vertices.emplace_back(x, y + 1, z + 1, a01 * r, a01 * g, a01 * b, 5);
+		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b);
+		m_vertices.emplace_back(x, y + 1, z + 1, a01 * r, a01 * g, a01 * b);
+		m_vertices.emplace_back(x, y, z + 1, a00 * r, a00 * g, a00 * b);
+		m_vertices.emplace_back(x + 1, y, z + 1, a10 * r, a10 * g, a10 * b);
+		m_vertices.emplace_back(x + 1, y + 1, z + 1, a11 * r, a11 * g, a11 * b);
+		m_vertices.emplace_back(x, y + 1, z + 1, a01 * r, a01 * g, a01 * b);
 	}
 }
