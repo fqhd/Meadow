@@ -3,3 +3,4 @@
 *.dll
 *.lib
 build
+world.dat
