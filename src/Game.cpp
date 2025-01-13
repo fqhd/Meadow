@@ -4,8 +4,8 @@
 
 void Game::init() {
 	world.init();
-	camera.init(WINDOW_WIDTH, WINDOW_HEIGHT);
 	player.init(&camera, &world);
+	camera.init(WINDOW_WIDTH, WINDOW_HEIGHT, player.getEyePos());
 	outline.init();
 	skybox.init();
 }
@@ -15,21 +15,6 @@ void Game::update(float dt, GameState& state) {
 		state = GameState::Pause;
 		InputManager::setMouseGrabbed(false);
 	}
-
-	if (InputManager::isKeyPressed(GLFW_KEY_I)) {
-		world.blockOffset.x += 1;
-	}
-	if (InputManager::isKeyPressed(GLFW_KEY_J)) {
-		world.blockOffset.z -= 1;
-	}
-	if (InputManager::isKeyPressed(GLFW_KEY_K)) {
-		world.blockOffset.x -= 1;
-	}
-	if (InputManager::isKeyPressed(GLFW_KEY_L)) {
-		world.blockOffset.z += 1;
-	}
-
-	world.chunk.needsMeshUpdate = true;
 
 	player.update(dt);
 	camera.setPosition(player.getEyePos());
@@ -51,7 +36,7 @@ void Game::render() {
 	}
 	world.updateMeshes();
 	skybox.render(camera);
-	world.render(camera, shadowmap.texture, shadowmap.lightSpaceMatrix, shadowmap.lightPos);
+	world.render(camera);
 	if (player.visibleBlocks.lookingAtBlock) {
 		outline.render(camera, player);
 	}

@@ -21,8 +21,8 @@ namespace Utils {
 	std::string readFileToString(const std::string& shaderName);
 	bool isInside(const glm::ivec2& mousePos, const glm::vec4& destRect);
 	bool isInRange(const glm::vec3& a, const glm::vec3& b, float range);
-	GLuint loadTexture(const std::string& _path);
 	std::vector<std::string> tokenizeString(const std::string& _str);
+	std::vector<std::string> listDir(const std::string& dirPath);
 
 
 }

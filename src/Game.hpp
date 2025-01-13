@@ -1,7 +1,6 @@
 #pragma once
 #include "Player.hpp"
 #include "World.hpp"
-#include "ShadowMap.hpp"
 #include "Camera.hpp"
 #include "GameState.hpp"
 #include "BlockOutline.hpp"
@@ -17,7 +16,6 @@ public:
 	void render();
 	void destroy();
 
-	ShadowMap shadowmap;
 	World world;
 	Player player;
 	Camera camera;

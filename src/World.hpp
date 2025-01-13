@@ -23,25 +23,21 @@ class World {
 public:
 
 	void init();
-	void createNew(const std::string& name);
 	Block getBlock(int _x, int _y, int _z);
 	void setBlock(int _x, int _y, int _z, Block _block);
 	void destroy();
-	std::string getName();
+	unsigned int getWorldSize();
 	void updateMeshes();
-	void render(Camera& camera, GLuint depthmap, const glm::mat4& lightSpaceMatrix, const glm::vec3& lightPos);
+	void render(Camera& camera);
 
-	int load(const std::string& path);
 	void save();
 
-	glm::ivec3 blockOffset;
-
-	Chunk chunk;
+	Chunk* getChunk(int x, int y, int z);
 
 private:
 
 	// Utility functions
-	void generateMesh();
+	void generateMesh(int chunkX, int chunkY, int chunkZ);
 	void addBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b);
 	bool isBlockInLocalWorld(int _x, int _y, int _z);
 
@@ -55,9 +51,9 @@ private:
 	void addBackFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b);
 
 	Block* m_data = nullptr;
-	std::string m_name;
-	GLuint textureArray;
+	Chunk* m_chunks = nullptr;
 	Shader m_shader;
+	unsigned int m_worldSize;
 
 
 };

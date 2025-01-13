@@ -7,7 +7,7 @@
 class Camera {
 public:
 
-	void init(int w, int h);
+	void init(int w, int h, glm::vec3 position);
 
 	void update();
 	float getPitch() const;

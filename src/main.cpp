@@ -3,7 +3,6 @@
 #include "GUIRenderer.hpp"
 #include "Game.hpp"
 #include "GameState.hpp"
-#include "MainMenu.hpp"
 #include "PauseMenu.hpp"
 
 int main() {
@@ -16,9 +15,7 @@ int main() {
 	game.init();
 	PauseMenu pausemenu;
 	pausemenu.init(&game.world);
-	MainMenu mainmenu;
-	mainmenu.init(&game);
-	GameState gamestate = GameState::MainMenu;
+	GameState gamestate = GameState::Pause;
 
 	double before = glfwGetTime();
 	while (gamestate != GameState::Exit) {
@@ -31,10 +28,6 @@ int main() {
 		if (gamestate == GameState::Game) {
 			game.update(dt, gamestate);
 			game.render();
-		}
-		else if (gamestate == GameState::MainMenu) {
-			mainmenu.update(dt, gamestate);
-			mainmenu.render();
 		}
 		else if (gamestate == GameState::Pause) {
 			pausemenu.update(dt, gamestate);

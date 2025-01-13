@@ -2,7 +2,6 @@
 
 enum class GameState {
 	Game,
-	MainMenu,
 	Pause,
 	Exit
 };

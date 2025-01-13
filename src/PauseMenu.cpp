@@ -20,7 +20,7 @@ void PauseMenu::update(float deltaTime, GameState& state) {
 		m_world->save();
 	}
 	if (exitButton.isPressed()) {
-		state = GameState::MainMenu;
+		state = GameState::Exit;
 		InputManager::setMouseGrabbed(false);
 	}
 }
@@ -32,7 +32,6 @@ void PauseMenu::render(Hotbar* hotbar) {
 	saveButton.render();
 	exitButton.render();
 	colorPicker.render();
-	// colorPicker.work();
 	GUIRenderer::drawRect(glm::vec4(604 + selectedSlot * 80, 346, 72, 72), ColorRGBA8(87, 38, 0));
 	for (int i = 0; i < 9; i++) {
 		GUIRenderer::drawRect(glm::vec4(608 + i*80, 350, 64, 64), hotbar->colors[i]);
@@ -47,5 +46,4 @@ void PauseMenu::render(Hotbar* hotbar) {
 
 	GUIRenderer::drawText("Save", glm::vec2(600, 190), glm::vec2(3.0f), ColorRGBA8(255, 255, 255));
 	GUIRenderer::drawText("Exit", glm::vec2(1080, 190), glm::vec2(3.0f), ColorRGBA8(255, 255, 255));
-	GUIRenderer::drawText(m_world->getName(), glm::vec2(840, 900), glm::vec2(2.0f), ColorRGBA8(255, 255, 255));
 }

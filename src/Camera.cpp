@@ -2,9 +2,10 @@
 
 const float FOV = 90.0f;
 
-void Camera::init(int w, int h) {
+void Camera::init(int w, int h, glm::vec3 position) {
 	m_projectionMatrix = glm::perspective(glm::radians(FOV), w / (float)h, 0.1f, 1000.0f);
-	m_position = glm::vec3(0.0f, 0.0f, -10.0f);
+	m_position = position;
+	m_viewMatrix = glm::lookAt(m_position, m_position + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void Camera::update() {

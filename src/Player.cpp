@@ -9,7 +9,8 @@ const unsigned int REACH_DISTANCE = 5;
 void Player::init(Camera* camera, World* world) {
 	m_camera = camera;
 	m_world = world;
-	position = glm::vec3(CHUNK_WIDTH / 2, 1, CHUNK_WIDTH / 2);
+	float worldWidthInBlocks = world->getWorldSize() * CHUNK_WIDTH;
+	position = glm::vec3(worldWidthInBlocks / 2.0f, 0.0f, worldWidthInBlocks / 2.0f);
 }
 
 void Player::update(float deltaTime) {
