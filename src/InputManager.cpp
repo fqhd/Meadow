@@ -67,7 +67,11 @@ void mouseMovedCallback(GLFWwindow* window, double _xpos, double _ypos) {
 }
 
 void wheelScrolledCallback(GLFWwindow* window, double xoffset, double yoffset) {
-	mouseWheelDelta = yoffset;
+	if(yoffset > 0.0f) {
+		mouseWheelDelta = 1.0f;
+	}else{
+		mouseWheelDelta = -1.0f;
+	}
 }
 
 void InputManager::init(GLFWwindow* _window) {
