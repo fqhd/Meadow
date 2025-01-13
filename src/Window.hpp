@@ -6,8 +6,8 @@
 #include <glm/glm.hpp>
 #include <iostream>
 
-const int WINDOW_WIDTH = 1920;
-const int WINDOW_HEIGHT = 1080;
+const int WINDOW_WIDTH = 1280;
+const int WINDOW_HEIGHT = 720;
 
 class Window {
 public:

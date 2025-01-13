@@ -11,7 +11,7 @@
 class Game {
 public:
 
-	void init();
+	void init(Block* data, unsigned int worldSize);
 	void update(float dt, GameState& state);
 	void render();
 	void destroy();

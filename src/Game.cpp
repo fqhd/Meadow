@@ -2,8 +2,8 @@
 #include "Window.hpp"
 #include "GUIRenderer.hpp"
 
-void Game::init() {
-	world.init();
+void Game::init(Block* data, unsigned int worldSize) {
+	world.init(data, worldSize);
 	player.init(&camera, &world);
 	camera.init(WINDOW_WIDTH, WINDOW_HEIGHT, player.getEyePos());
 	outline.init();

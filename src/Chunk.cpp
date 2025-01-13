@@ -15,8 +15,8 @@ void Chunk::init() {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 
-	glVertexAttribIPointer(0, 3, GL_UNSIGNED_BYTE, sizeof(ChunkVertex), 0);
-	glVertexAttribIPointer(1, 3, GL_UNSIGNED_BYTE, sizeof(ChunkVertex), (void*)3);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ChunkVertex), 0);
+	glVertexAttribIPointer(1, 3, GL_UNSIGNED_BYTE, sizeof(ChunkVertex), (void*)12);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);

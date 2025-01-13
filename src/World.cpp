@@ -1,52 +1,12 @@
 #include "World.hpp"
 #include <fstream>
 
-bool isUnsignedInteger(const std::string& str) {
-    return !str.empty() && std::all_of(str.begin(), str.end(), ::isdigit);
-}
 
-void World::init(){
-	// Try to open the world save file, if it exists, load the world from it, if not, prompt the user for world size and create a new one
-	std::ifstream file("world.dat", std::ios::in | std::ios::binary);
-	if (!file.good()) {
-		std::cout << "Could not find world save file, creating a new one..." << std::endl;
-		std::cout << "Enter the world size(1-32): ";
-		std::string userInput;
-		std::getline(std::cin, userInput);
-		if(!isUnsignedInteger(userInput)){
-			throw std::runtime_error("The world size must be an unsigned integer(a positive whole number)");
-		}
-		int worldSize = std::stoi(userInput);
-		if(worldSize > 32 || worldSize <= 0) {
-			throw std::runtime_error("Invalid range. The world size must be between 1 and 32");
-		}
-		m_worldSize = worldSize;
 
-		m_data = new Block[CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * m_worldSize * m_worldSize * 4];
-		memset(m_data, 0, sizeof(Block) * CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * m_worldSize * m_worldSize * 4);
-		for (int i = 0; i < CHUNK_WIDTH * m_worldSize; i++) {
-			for (int j = 0; j < CHUNK_WIDTH * m_worldSize; j++) {
-				m_data[j * CHUNK_WIDTH * m_worldSize + i] = Block(255, 255, 255, true);
-			}
-		}
-	}else{
-		file.read(reinterpret_cast<char*>(&m_worldSize), sizeof(m_worldSize));
-		if (!file) {
-			throw std::runtime_error("Failed to load world, file format invalid");
-		}
-		if(m_worldSize <= 0 || m_worldSize > 32) {
-			throw std::runtime_error("Failed to load world, world size out of range");
-		}
-
-		m_data = new Block[CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * m_worldSize * m_worldSize * 4];
-
-		file.read(reinterpret_cast<char*>(m_data), CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * m_worldSize * m_worldSize * 4);
-		if (!file) {
-			throw std::runtime_error("Failed to load world, insufficient world data");
-		}
-
-		file.close();
-	}
+void World::init(Block* data, unsigned int worldSize){
+	m_data = data;
+	m_worldSize = worldSize;
+	
 
 	m_chunks = new Chunk[m_worldSize * m_worldSize * 4];
 	for(int i = 0; i < m_worldSize * m_worldSize * 4; i++) {
@@ -147,7 +107,7 @@ void World::generateMesh(int chunkX, int chunkY, int chunkZ){
 	}
 }
 
-bool World::isBlockInLocalWorld(int _x, int _y, int _z){
+bool World::isBlockInLocalWorld(int _x, int _y, int _z) const {
 	if(_x < 0 || _x >= CHUNK_WIDTH * m_worldSize || _z < 0 || _z >= CHUNK_WIDTH * m_worldSize || _y < 0 || _y >= CHUNK_WIDTH * 4) return false;
 	return true;
 }
@@ -184,7 +144,7 @@ void World::setBlock(int x, int y, int z, Block block) {
 	}
 }
 
-void World::addBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
+void World::addBlock(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b){
 	addTopFace(x, y, z, r, g, b);
 	addBottomFace(x, y, z, r * 0.90, g * 0.90, b * 0.90);
 	addLeftFace(x, y, z, r * 0.94, g * 0.94, b * 0.94);
@@ -201,11 +161,11 @@ unsigned int calcAO(bool side1, bool side2, bool corner, bool face){
 	return 3 - (side1 + side2 + corner);
 }
 
-float map(float ao) {
-	return 0.6 + ao * 0.4;
+static float map(float ao) {
+	return 0.6f + ao * 0.4f;
 }
 
-void World::addTopFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
+void World::addTopFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x, y + 1, z);
 	if(adjacentBlock.visible) return;
 
@@ -237,7 +197,7 @@ void World::addTopFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GL
 	}
 }
 
-void World::addBottomFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
+void World::addBottomFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x, y - 1, z);
 	if(adjacentBlock.visible) return;
 
@@ -270,7 +230,7 @@ void World::addBottomFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g,
 	}
 }
 
-void World::addRightFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
+void World::addRightFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x - 1, y, z);
 	if(adjacentBlock.visible) return;
 
@@ -302,7 +262,7 @@ void World::addRightFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, 
 	}
 }
 
-void World::addLeftFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
+void World::addLeftFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x + 1, y, z);
 	if(adjacentBlock.visible) return;
 
@@ -334,7 +294,7 @@ void World::addLeftFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, G
 	}
 }
 
-void World::addFrontFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
+void World::addFrontFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x, y, z - 1);
 	if(adjacentBlock.visible) return;
 
@@ -366,7 +326,7 @@ void World::addFrontFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, 
 	}
 }
 
-void World::addBackFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b){
+void World::addBackFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b){
 	Block adjacentBlock = getBlock(x, y, z + 1);
 	if(adjacentBlock.visible) return;
 

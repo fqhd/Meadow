@@ -22,7 +22,7 @@ struct Block {
 class World {
 public:
 
-	void init();
+	void init(Block* data, unsigned int worldSize);
 	Block getBlock(int _x, int _y, int _z);
 	void setBlock(int _x, int _y, int _z, Block _block);
 	void destroy();
@@ -38,17 +38,17 @@ private:
 
 	// Utility functions
 	void generateMesh(int chunkX, int chunkY, int chunkZ);
-	void addBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b);
-	bool isBlockInLocalWorld(int _x, int _y, int _z);
+	void addBlock(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b);
+	bool isBlockInLocalWorld(int _x, int _y, int _z) const;
 
 	// Mesh generation functions
 	std::vector<ChunkVertex> m_vertices;
-	void addTopFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b);
-	void addBottomFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b);
-	void addRightFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b);
-	void addLeftFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b);
-	void addFrontFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b);
-	void addBackFace(GLubyte x, GLubyte y, GLubyte z, GLubyte r, GLubyte g, GLubyte b);
+	void addTopFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b);
+	void addBottomFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b);
+	void addRightFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b);
+	void addLeftFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b);
+	void addFrontFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b);
+	void addBackFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b);
 
 	Block* m_data = nullptr;
 	Chunk* m_chunks = nullptr;
