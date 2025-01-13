@@ -9,6 +9,7 @@ bool isFocused = true;
 char lastKeyPressed = -1;
 float mouseWheelDelta = 0;
 glm::vec2 initialWindowSize;
+#include "Window.hpp"
 
 std::unordered_map<int, bool> InputManager::m_previousKeymap;
 GLFWwindow* InputManager::m_window = nullptr;
@@ -141,7 +142,7 @@ glm::vec2 InputManager::getMousePosition() {
 }
 
 glm::vec2 InputManager::getScaledMousePosition() {
-	return mousePosition / windowSize * initialWindowSize;
+	return (mousePosition / windowSize) * initialWindowSize;
 }
 
 glm::vec2 InputManager::getWindowSize() {

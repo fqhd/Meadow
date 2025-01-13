@@ -1,5 +1,6 @@
 #include "GUIButton.hpp"
 #include "Utils.hpp"
+#include "Window.hpp"
 
 void GUIButton::init(const glm::vec4& destRect, ColorRGBA8 color) {
 	m_baseColor = color;
@@ -17,7 +18,7 @@ void GUIButton::update(float deltaTime) {
 	m_isPressed = false;
 	glm::ivec2 mousePos = glm::floor(InputManager::getScaledMousePosition());
 
-	if (Utils::isInside(mousePos, m_destRect)) { // Mouse is inside the button
+	if (Utils::isInside(mousePos, Utils::toScreenCoords(m_destRect, WINDOW_WIDTH, WINDOW_HEIGHT))) { // Mouse is inside the button
 		m_targetRect = glm::vec4(m_originalRect.x - 10, m_originalRect.y - 10, m_originalRect.z + 20, m_originalRect.w + 20);
 		m_currentColor = ColorRGBA8(m_baseColor.r * 0.8f, m_baseColor.g * 0.8f, m_baseColor.b * 0.8f, m_baseColor.a);
 		if (InputManager::isKeyDown(GLFW_MOUSE_BUTTON_LEFT)) {

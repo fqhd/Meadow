@@ -1,7 +1,7 @@
 #include "GUIColorPicker.hpp"
 #include "GUIRenderer.hpp"
 #include "InputManager.hpp"
-
+#include "Window.hpp"
 
 glm::vec3 hsv2rgb(glm::vec3 c) {
 	glm::vec4 K = glm::vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
@@ -27,24 +27,24 @@ void GUIColorPicker::render() {
 	GUIRenderer::drawRainbow(glm::vec4(1000.0f, 600.0f, 700.0f, 50.0f));
 	change = false;
 	if (InputManager::isKeyDown(GLFW_MOUSE_BUTTON_1)) { // Select color based on hue
-		glm::ivec2 mousePos = InputManager::getScaledMousePosition();
-		if (Utils::isInside(mousePos, glm::vec4(1000.0f, 600.0f, 700.0f, 50.0f))) {
-			float y = mousePos.x - 1000.0f;
-			y /= 700.0f;
+		const glm::ivec2 mousePos = InputManager::getScaledMousePosition();
+		glm::vec4 scaledHueDestRect = Utils::toScreenCoords(glm::vec4(1000.0f, 600.0f, 700.0f, 50.0f), WINDOW_WIDTH, WINDOW_HEIGHT);
+		if (Utils::isInside(mousePos, scaledHueDestRect)) {
+			float y = mousePos.x - scaledHueDestRect.x;
+			y /= scaledHueDestRect.z;
 			glm::vec3 color = hsv2rgb(glm::vec3(y, 1.0f, 1.0f));
 			currentSliderColor.r = color.r * 255;
 			currentSliderColor.g = color.g * 255;
 			currentSliderColor.b = color.b * 255;
 			currentSliderColor.a = 255;
-
-			GUIRenderer::drawRect(glm::vec4(mousePos.x - 4.0f, mousePos.y - 4.0f, 64.0f, 64.0f), currentSliderColor);
 		}
-		if (Utils::isInside(mousePos, glm::vec4(1200.0f, 650.0f, 500.0f, 200.0f))) {
-			float x = mousePos.x - 1200.0f;
-			float y = mousePos.y - 650.0f;
+		glm::vec4 scaledSVDestRect = Utils::toScreenCoords(glm::vec4(1200.0f, 650.0f, 500.0f, 200.0f), WINDOW_WIDTH, WINDOW_HEIGHT);
+		if (Utils::isInside(mousePos, scaledSVDestRect)) {
+			float x = mousePos.x - scaledSVDestRect.x;
+			float y = mousePos.y - scaledSVDestRect.y;
 
-			x /= 500.0f;
-			y /= 200.0f;
+			x /= scaledSVDestRect.z;
+			y /= scaledSVDestRect.w;
 
 			glm::vec4 currCol(0.0f);
 			currCol.r = currentSliderColor.r / 255.0f;
@@ -59,7 +59,6 @@ void GUIColorPicker::render() {
 			selectedColor.b = color.b * 255;
 			selectedColor.a = 255;
 			change = true;
-			GUIRenderer::drawRect(glm::vec4(mousePos.x - 4.0f, mousePos.y - 4.0f, 64.0f, 64.0f), selectedColor);
 		}
 	}
 }

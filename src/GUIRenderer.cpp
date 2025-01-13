@@ -1,6 +1,7 @@
 #include "GUIRenderer.hpp"
 #define STB_TRUETYPE_IMPLEMENTATION
 #include "stb_truetype.h"
+#include "Window.hpp"
 
 static Shader shader;
 static GLuint m_font_texture;
@@ -38,7 +39,8 @@ void GUIRenderer::init(unsigned int windowWidth, unsigned int windowHeight){
 	glGenVertexArrays(1, &vao);
 }
 
-void GUIRenderer::drawRect(const glm::vec4& destRect, const ColorRGBA8& color) {
+void GUIRenderer::drawRect(glm::vec4 destRect, const ColorRGBA8& color) {
+	destRect = Utils::toScreenCoords(destRect, WINDOW_WIDTH, WINDOW_HEIGHT);
 	shader.bind();
 	shader.loadUniform("type", 2);
 	shader.loadUniform("destRect", destRect);
@@ -58,7 +60,8 @@ void GUIRenderer::drawRect(const glm::vec4& destRect, const ColorRGBA8& color) {
 	glEnable(GL_CULL_FACE);
 }
 
-void GUIRenderer::drawRect(const glm::vec4& destRect, GLuint texture) {
+void GUIRenderer::drawRect(glm::vec4 destRect, GLuint texture) {
+	destRect = Utils::toScreenCoords(destRect, WINDOW_WIDTH, WINDOW_HEIGHT);
 	shader.bind();
 	shader.loadUniform("type", 3);
 	shader.loadUniform("destRect", destRect);
@@ -74,7 +77,8 @@ void GUIRenderer::drawRect(const glm::vec4& destRect, GLuint texture) {
 	glEnable(GL_CULL_FACE);
 }
 
-void GUIRenderer::drawRect(const glm::vec4& destRect, ColorRGBA8 v1, ColorRGBA8 v2, ColorRGBA8 v3, ColorRGBA8 v4) {
+void GUIRenderer::drawRect(glm::vec4 destRect, ColorRGBA8 v1, ColorRGBA8 v2, ColorRGBA8 v3, ColorRGBA8 v4) {
+	destRect = Utils::toScreenCoords(destRect, WINDOW_WIDTH, WINDOW_HEIGHT);
 	shader.bind();
 	shader.loadUniform("type", 2);
 	shader.loadUniform("destRect", destRect);
@@ -91,7 +95,8 @@ void GUIRenderer::drawRect(const glm::vec4& destRect, ColorRGBA8 v1, ColorRGBA8 
 	glEnable(GL_CULL_FACE);
 }
 
-void GUIRenderer::drawRainbow(const glm::vec4& destRect) {
+void GUIRenderer::drawRainbow(glm::vec4 destRect) {
+	destRect = Utils::toScreenCoords(destRect, WINDOW_WIDTH, WINDOW_HEIGHT);
 	shader.bind();
 	shader.loadUniform("type", 1);
 	shader.loadUniform("destRect", destRect);
@@ -110,8 +115,10 @@ void flipQuad(glm::vec4& quad, float baseline) {
 }
 
 void GUIRenderer::drawText(const std::string& s, const glm::vec2& position, const glm::vec2& scale, const ColorRGBA8& color){
-	float xPos = position.x;
-	float yPos = position.y;
+	glm::vec4 destRect = Utils::toScreenCoords(glm::vec4(position, scale), WINDOW_WIDTH, WINDOW_HEIGHT);
+
+	float xPos = destRect.x;
+	float yPos = destRect.y;
 
 	shader.bind();
 	glBindVertexArray(vao);
@@ -125,7 +132,7 @@ void GUIRenderer::drawText(const std::string& s, const glm::vec2& position, cons
 	for (unsigned int i = 0; i < s.size(); i++) {
 		stbtt_aligned_quad q;
 
-		stbtt_GetBakedQuad(m_charData, bitmapWidth, bitmapHeight, s[i] - 32, &xPos, &yPos, scale.x, &q, 1);
+		stbtt_GetBakedQuad(m_charData, bitmapWidth, bitmapHeight, s[i] - 32, &xPos, &yPos, destRect.z, &q, 1);
 
 		float x = q.x0;
 		float y = q.y0;
@@ -133,8 +140,8 @@ void GUIRenderer::drawText(const std::string& s, const glm::vec2& position, cons
 		float h = (q.y1 - q.y0);
 		glm::vec4 quad = glm::vec4(x, y, w, h);
 		flipQuad(quad, yPos);
-		quad.w *= scale.x;
-		quad.z *= scale.y;
+		quad.w *= destRect.z;
+		quad.z *= destRect.w;
 
 		shader.loadUniform("destRect", quad);
 		glm::vec4 uvRect(q.s0, q.t0 + (q.t1 - q.t0), q.s1 - q.s0, -(q.t1 - q.t0));

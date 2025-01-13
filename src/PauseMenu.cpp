@@ -26,7 +26,7 @@ void PauseMenu::update(float deltaTime, GameState& state) {
 }
 
 void PauseMenu::render(Hotbar* hotbar) {
-	GUIRenderer::drawRect(glm::vec4(0.0f, 0.0f, WINDOW_WIDTH, WINDOW_HEIGHT), ColorRGBA8(0, 0, 0, 64));
+	GUIRenderer::drawRect(glm::vec4(0.0f, 0.0f, 1920, 1080), ColorRGBA8(0, 0, 0, 64));
 	GUIRenderer::drawRect(glm::vec4(96, 96, 1728, 888), ColorRGBA8(255, 255, 255));
 	GUIRenderer::drawRect(glm::vec4(100, 100, 1720, 880), ColorRGBA8(52, 198, 235));
 	saveButton.render();
@@ -36,7 +36,7 @@ void PauseMenu::render(Hotbar* hotbar) {
 	for (int i = 0; i < 9; i++) {
 		GUIRenderer::drawRect(glm::vec4(608 + i*80, 350, 64, 64), hotbar->colors[i]);
 		if (InputManager::isKeyDown(GLFW_MOUSE_BUTTON_1)) {
-			if (Utils::isInside(InputManager::getScaledMousePosition(), glm::vec4(608 + i * 80, 350, 64, 64))) {
+			if (Utils::isInside(InputManager::getScaledMousePosition(), Utils::toScreenCoords(glm::vec4(608 + i * 80, 350, 64, 64), WINDOW_WIDTH, WINDOW_HEIGHT))) {
 				selectedSlot = i;
 			}
 		}

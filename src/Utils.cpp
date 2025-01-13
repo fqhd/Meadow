@@ -25,37 +25,15 @@ uint8_t* Utils::readFileToBuffer(const std::string& filePath) {
 	return buffer;
 }
 
-/*
-	TODO: this tokenize function doesn't work properly it must be fixed.
-	The goal of this function would be to take a string filled with both
-	letters and spaces and return an array of strings corresponding to the
-	letters/words separated by said spaces e.g:
-
-	Input: "Hello, this is an example string"
-	Output: "Hello", "this", "is", "an", "example", "string"
-
-	The function shoudl also account for multiple spaces as exceptions. For example:
-
-	Input: "   Hey, this     i    s me"
-	Output: "Hey", "this", "i", "s", "me"
-*/
-std::vector<std::string> Utils::tokenizeString(const std::string& _str) {
-	std::vector<std::string> tokens;
-	tokens.push_back(std::string());
-	for (unsigned int i = 0; i < _str.size(); i++) {
-		if (_str[i] == ' ') {
-			tokens.push_back(std::string());
-		}
-		else {
-			tokens.back().push_back(_str[i]);
-		}
-	}
-	return tokens;
-}
 
 void Utils::freeBuffer(uint8_t* buffer) {
 	free(buffer);
 }
+
+glm::vec4 Utils::toScreenCoords(glm::vec4 rect, int w, int h) {
+	return glm::vec4((rect.x / 1920.0f) * w, (rect.y / 1080.0f) * h, (rect.z / 1920.f) * w, (rect.w / 1080.0f) * h);
+}
+
 
 std::string Utils::readFileToString(const std::string& shaderName) {
 	std::string shaderCode = "";

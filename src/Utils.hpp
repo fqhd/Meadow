@@ -2,17 +2,12 @@
 
 #include <string>
 #include <fstream>
-#include <vector>
 #include <cstdint>
 #include <iostream>
 #include <cstdarg>
 #include <chrono>
 #include "glad.h"
 #include <glm/glm.hpp>
-
-enum CollisionType {
-	NONE, X_AXIS, Y_AXIS, Z_AXIS
-};
 
 namespace Utils {
 
@@ -21,8 +16,7 @@ namespace Utils {
 	std::string readFileToString(const std::string& shaderName);
 	bool isInside(const glm::ivec2& mousePos, const glm::vec4& destRect);
 	bool isInRange(const glm::vec3& a, const glm::vec3& b, float range);
-	std::vector<std::string> tokenizeString(const std::string& _str);
-	std::vector<std::string> listDir(const std::string& dirPath);
+	glm::vec4 toScreenCoords(glm::vec4 rect, int w, int th);
 
 
 }
