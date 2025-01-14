@@ -167,8 +167,12 @@ class camera {
         hit_record rec;
 
         // If the ray hits nothing, return the background color.
-        if (!world.hit(r, interval(0.001, infinity), rec))
-            return background;
+        if (!world.hit(r, interval(0.001, infinity), rec)){
+            double height = (r.direction() / r.direction().length()).y();
+	        height = (height + 1.0) / 2.0;
+	        vec3 col = vec3(1.0, 1.0, 1.0) * (1 - height) + vec3(0.5, 0.7, 1.0) * height;
+            return col;
+        }
 
         scatter_record srec;
         color color_from_emission = rec.mat->emitted(r, rec, rec.u, rec.v, rec.p);

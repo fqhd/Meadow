@@ -115,9 +115,6 @@ int main() {
     // Cornell box sides
     world.add(make_shared<quad>(point3(555,0,0), vec3(0,0,555), vec3(0,555,0), green));
     world.add(make_shared<quad>(point3(0,0,555), vec3(0,0,-555), vec3(0,555,0), red));
-    world.add(make_shared<quad>(point3(0,555,0), vec3(555,0,0), vec3(0,0,555), white));
-    world.add(make_shared<quad>(point3(0,0,555), vec3(555,0,0), vec3(0,0,-555), white));
-    world.add(make_shared<quad>(point3(555,0,555), vec3(-555,0,0), vec3(0,555,0), white));
 
     // Light
     world.add(make_shared<quad>(point3(213,554,227), vec3(130,0,0), vec3(0,0,105), light));
@@ -147,7 +144,7 @@ int main() {
     cam.max_depth         = 50;
     cam.background        = color(0,0,0);
 
-    cam.vfov     = 40;
+    cam.vfov     = 90;
     cam.lookfrom = point3(278, 278, -800);
     cam.lookat   = point3(278, 278, 0);
     cam.vup      = vec3(0, 1, 0);
