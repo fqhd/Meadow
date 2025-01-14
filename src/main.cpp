@@ -8,14 +8,105 @@
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "raytracing/rtweekend.h"
+#include "raytracing/bvh.h"
 #include "raytracing/camera.h"
+#include "raytracing/constant_medium.h"
+#include "raytracing/hittable.h"
 #include "raytracing/hittable_list.h"
 #include "raytracing/material.h"
 #include "raytracing/quad.h"
 #include "raytracing/sphere.h"
+#include "raytracing/texture.h"
+
+World* world_ptr;
+hittable_list* rtworld_ptr;
 
 static bool isUnsignedInteger(const std::string& str) {
 	return !str.empty() && std::all_of(str.begin(), str.end(), ::isdigit);
+}
+
+
+void addTopFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b){
+	Block adjacentBlock = world_ptr->getBlock(x, y + 1, z);
+	if(adjacentBlock.visible) return;
+
+	auto material = make_shared<lambertian>(color(r/255.0, g/255.0, b/255.0));
+	auto face = make_shared<quad>(point3(x, y+1, z), vec3(0, 0, 1), vec3(1, 0, 0), material);
+	rtworld_ptr->add(face);
+}
+
+void addBottomFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b){
+	Block adjacentBlock = world_ptr->getBlock(x, y - 1, z);
+	if(adjacentBlock.visible) return;
+
+	auto material = make_shared<lambertian>(color(r/255.0, g/255.0, b/255.0));
+	auto face = make_shared<quad>(point3(x, y, z), vec3(0, 0, 1), vec3(1, 0, 0), material);
+	rtworld_ptr->add(face);
+}
+
+void addRightFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b){
+	Block adjacentBlock = world_ptr->getBlock(x - 1, y, z);
+	if(adjacentBlock.visible) return;
+
+	auto material = make_shared<lambertian>(color(r/255.0, g/255.0, b/255.0));
+	auto face = make_shared<quad>(point3(x, y, z), vec3(0, 0, 1), vec3(0, 1, 0), material);
+	rtworld_ptr->add(face);
+}
+
+void addLeftFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b){
+	Block adjacentBlock = world_ptr->getBlock(x + 1, y, z);
+	if(adjacentBlock.visible) return;
+
+	auto material = make_shared<lambertian>(color(r/255.0, g/255.0, b/255.0));
+	auto face = make_shared<quad>(point3(x+1, y, z), vec3(0, 0, 1), vec3(0, 1, 0), material);
+	rtworld_ptr->add(face);
+}
+
+void addFrontFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b){
+	Block adjacentBlock = world_ptr->getBlock(x, y, z - 1);
+	if(adjacentBlock.visible) return;
+
+	auto material = make_shared<lambertian>(color(r/255.0, g/255.0, b/255.0));
+	auto face = make_shared<quad>(point3(x, y, z), vec3(1, 0, 0), vec3(0, 1, 0), material);
+	rtworld_ptr->add(face);
+}
+
+void addBackFace(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b){
+	Block adjacentBlock = world_ptr->getBlock(x, y, z + 1);
+	if(adjacentBlock.visible) return;
+
+	auto material = make_shared<lambertian>(color(r/255.0, g/255.0, b/255.0));
+	auto face = make_shared<quad>(point3(x, y, z+1), vec3(1, 0, 0), vec3(0, 1, 0), material);
+	rtworld_ptr->add(face);
+}
+
+void addBlock(float x, float y, float z, GLubyte r, GLubyte g, GLubyte b){
+	addTopFace(x, y, z, r, g, b);
+	addBottomFace(x, y, z, r, g, b);
+	addLeftFace(x, y, z, r, g, b);
+	addRightFace(x, y, z, r, g, b);
+	addFrontFace(x, y, z, r, g, b);
+	addBackFace(x, y, z, r, g, b);
+}
+
+static void generateMesh(int chunkX, int chunkY, int chunkZ){
+	unsigned int cw = CHUNK_WIDTH;
+
+	for(unsigned int y = 0; y < cw; y++){
+		for(unsigned int z = 0; z < cw; z++){
+			for(unsigned int x = 0; x < cw; x++){
+				int globalX = x + chunkX * CHUNK_WIDTH;
+				int globalY = y + chunkY * CHUNK_WIDTH;
+				int globalZ = z + chunkZ * CHUNK_WIDTH;
+
+				Block block = world_ptr->getBlock(globalX, globalY, globalZ);
+
+				if(block.visible){
+					addBlock(globalX, globalY, globalZ, block.r, block.g, block.b);
+				}
+			}
+		}
+	}
 }
 
 int main() {
@@ -49,17 +140,17 @@ int main() {
 	else {
 		file.read(reinterpret_cast<char*>(&worldSize), sizeof(worldSize));
 		if (!file) {
-			throw std::runtime_error("Failed to load world, file format invalid");
+			throw std::runtime_error("Failed to load file format invalid");
 		}
 		if (worldSize <= 0 || worldSize > 32) {
-			throw std::runtime_error("Failed to load world, world size out of range");
+			throw std::runtime_error("Failed to load world size out of range");
 		}
 
 		data = new Block[CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * worldSize * worldSize * 4];
 
 		file.read(reinterpret_cast<char*>(data), CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * worldSize * worldSize * 4 * sizeof(Block));
 		if (!file) {
-			throw std::runtime_error("Failed to load world, insufficient world data");
+			throw std::runtime_error("Failed to load insufficient world data");
 		}
 
 		file.close();
@@ -106,56 +197,45 @@ int main() {
 
 	// If we should render, init the world and begin rendering
 	hittable_list world;
+	world_ptr = &game.world;
+	rtworld_ptr = &world;
 
-    auto red   = make_shared<lambertian>(color(.65, .05, .05));
-    auto white = make_shared<lambertian>(color(.73, .73, .73));
-    auto green = make_shared<lambertian>(color(.12, .45, .15));
-    auto light = make_shared<diffuse_light>(color(15, 15, 15));
+	for(int y = 0; y < 4; y++) {
+		for(int z = 0; z < worldSize; z++) {
+			for(int x = 0; x < worldSize; x++) {
+				int chunkIndex = (y * worldSize * worldSize) + (z * worldSize) + x;
+				generateMesh(x, y, z);
+			}
+		}
+	}
 
-    // Cornell box sides
-    world.add(make_shared<quad>(point3(555,0,0), vec3(0,0,555), vec3(0,555,0), green));
-    world.add(make_shared<quad>(point3(0,0,555), vec3(0,0,-555), vec3(0,555,0), red));
+	
 
-    // Light
-    world.add(make_shared<quad>(point3(213,554,227), vec3(130,0,0), vec3(0,0,105), light));
 
-    // Box
-    shared_ptr<hittable> box1 = box(point3(0,0,0), point3(165,330,165), white);
-    box1 = make_shared<rotate_y>(box1, 15);
-    box1 = make_shared<translate>(box1, vec3(265,0,295));
-    world.add(box1);
-
-    // Glass Sphere
-    auto glass = make_shared<dielectric>(1.5);
-    world.add(make_shared<sphere>(point3(190,90,190), 90, glass));
-
-    // Light Sources
-    auto empty_material = shared_ptr<material>();
-    hittable_list lights;
-    lights.add(
-        make_shared<quad>(point3(343,554,332), vec3(-130,0,0), vec3(0,0,-105), empty_material));
-    lights.add(make_shared<sphere>(point3(190, 90, 190), 90, empty_material));
+    world = hittable_list(make_shared<bvh_node>(world));
 
     camera cam;
 
-    cam.aspect_ratio      = 1.0;
-    cam.image_width       = 600;
-    cam.samples_per_pixel = 1;
-    cam.max_depth         = 50;
-    cam.background        = color(0,0,0);
+    cam.aspect_ratio      = 16.0 / 9.0;
+    cam.image_width       = 400;
+    cam.samples_per_pixel = 100;
+    cam.max_depth         = 10;
+    cam.background        = color(0.70, 0.80, 1.00);
 
     cam.vfov     = 90;
-    cam.lookfrom = point3(278, 278, -800);
-    cam.lookat   = point3(278, 278, 0);
-    cam.vup      = vec3(0, 1, 0);
+    cam.lookfrom = vec3(game.camera.getPosition().x, game.camera.getPosition().y, game.camera.getPosition().z);
+	glm::vec3 camCenter = game.camera.getPosition() + game.camera.getForward();
+    cam.lookat   = point3(camCenter.x, camCenter.y, camCenter.z);
+    cam.vup      = vec3(0,1,0);
 
-    cam.defocus_angle = 0;
-
+    cam.defocus_angle = 0.6;
+    cam.focus_dist    = 10.0;
 
 	game.destroy();
 	Window::close();
 
-    cam.render(world, lights);
+    cam.render(world);
+
 	
 	return 0;
 }
