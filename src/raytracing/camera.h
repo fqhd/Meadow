@@ -32,6 +32,7 @@ class camera {
     double defocus_angle = 0;  // Variation angle of rays through each pixel
     double focus_dist = 10;    // Distance from camera lookfrom point to plane of perfect focus
 
+    
     void render(const hittable& world) {
         initialize();
 
@@ -43,18 +44,13 @@ class camera {
         const int numThreads = std::thread::hardware_concurrency();
         std::cout << "Running with " << numThreads << " threads" << std::endl;
 
-        std::atomic<int> nextLine(0);  // Atomic counter for the next line to process
-        std::mutex outputMutex;        // Mutex for console output
+        std::atomic<int> nextLine(0);   // Atomic counter for the next line to process
+        std::atomic<int> linesCompleted(0);  // Tracks how many lines have been processed
 
         auto renderTask = [&]() {
             while (true) {
                 int j = nextLine.fetch_add(1);  // Atomically get the next line to render
                 if (j >= image_height) break;   // Stop if all lines are processed
-
-                {
-                    std::lock_guard<std::mutex> lock(outputMutex);
-                    std::cout << "Scanlines remaining: " << (image_height - j) << ' ' << std::endl;
-                }
 
                 for (int i = 0; i < image_width; i++) {
                     color pixel_color(0, 0, 0);
@@ -67,6 +63,12 @@ class camera {
                     data[j * image_width * 4 + i * 4 + 1] = (unsigned char)(pixel_color.y() * 255);
                     data[j * image_width * 4 + i * 4 + 2] = (unsigned char)(pixel_color.z() * 255);
                     data[j * image_width * 4 + i * 4 + 3] = 255;
+                }
+
+                int completed = linesCompleted.fetch_add(1) + 1;
+                if (completed % (image_height / 100) == 0 || completed == image_height) {
+                    int percentage = (completed * 100) / image_height;
+                    std::cout << "\rProgress: " << percentage << "% " << std::flush;
                 }
             }
         };
@@ -81,6 +83,8 @@ class camera {
         for (auto& t : threads) {
             t.join();
         }
+
+        std::cout << "\nRendering complete!" << std::endl;
 
         stbi_write_png("output.png", image_width, image_height, 4, data, image_width * 4);
         delete[] data;
