@@ -18,11 +18,10 @@
 
 class camera {
   public:
-    double aspect_ratio      = 1.0;  // Ratio of image width over height
+    int    image_height      = 100;  // Rendered image height
     int    image_width       = 100;  // Rendered image width in pixel count
     int    samples_per_pixel = 10;   // Count of random samples for each pixel
     int    max_depth         = 10;   // Maximum number of ray bounces into scene
-    color  background;               // Scene background color
 
     double vfov     = 90;              // Vertical view angle (field of view)
     point3 lookfrom = point3(0,0,0);   // Point camera is looking from
@@ -91,7 +90,6 @@ class camera {
     }
 
   private:
-    int    image_height;         // Rendered image height
     double pixel_samples_scale;  // Color scale factor for a sum of pixel samples
     point3 center;               // Camera center
     point3 pixel00_loc;          // Location of pixel 0, 0
@@ -102,9 +100,6 @@ class camera {
     vec3   defocus_disk_v;       // Defocus disk vertical radius
 
     void initialize() {
-        image_height = int(image_width / aspect_ratio);
-        image_height = (image_height < 1) ? 1 : image_height;
-
         pixel_samples_scale = 1.0 / samples_per_pixel;
 
         center = lookfrom;

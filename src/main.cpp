@@ -209,20 +209,37 @@ int main() {
 		}
 	}
 
-	
-
-
     world = hittable_list(make_shared<bvh_node>(world));
+
+	game.destroy();
+	Window::close();
 
     camera cam;
 
-    cam.aspect_ratio      = 16.0 / 9.0;
-    cam.image_width       = 400;
-    cam.samples_per_pixel = 100;
-    cam.max_depth         = 10;
-    cam.background        = color(0.70, 0.80, 1.00);
+	int renderWidth;
+	int renderHeight;
+	int samplesPerPixel;
 
-    cam.vfov     = 90;
+	std::string userInput;
+	std::cout << "Render width: ";
+	std::cin >> userInput;
+	renderWidth = std::stoi(userInput);
+	
+	std::cout << "Render height: ";
+	std::cin >> userInput;
+	renderHeight = std::stoi(userInput);
+	
+	std::cout << "Samples per pixel: ";
+	std::cin >> userInput;
+	samplesPerPixel = std::stoi(userInput);
+	
+
+	cam.image_height = renderHeight;
+    cam.image_width       = renderWidth;
+    cam.samples_per_pixel = samplesPerPixel;
+    cam.max_depth         = 50;
+
+    cam.vfov     = 70.0;
     cam.lookfrom = vec3(game.camera.getPosition().x, game.camera.getPosition().y, game.camera.getPosition().z);
 	glm::vec3 camCenter = game.camera.getPosition() + game.camera.getForward();
     cam.lookat   = point3(camCenter.x, camCenter.y, camCenter.z);
@@ -231,8 +248,7 @@ int main() {
     cam.defocus_angle = 0.6;
     cam.focus_dist    = 10.0;
 
-	game.destroy();
-	Window::close();
+
 
     cam.render(world);
 

@@ -1,6 +1,6 @@
 #include "Camera.hpp"
 
-const float FOV = 90.0f;
+const float FOV = 70.0f;
 
 void Camera::init(int w, int h, glm::vec3 position) {
 	m_projectionMatrix = glm::perspective(glm::radians(FOV), w / (float)h, 0.1f, 1000.0f);
