@@ -5,6 +5,7 @@
 #include "GameState.hpp"
 #include "PauseMenu.hpp"
 #include <algorithm>
+#include <chrono>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "raytracing/rtweekend.h"
@@ -250,7 +251,10 @@ int main() {
 
 
 
+	auto start = std::chrono::high_resolution_clock::now();
     cam.render(world);
+	std::chrono::duration<float> totalTime = std::chrono::high_resolution_clock::now() - start;
+	std::cout << "Render time: " << totalTime.count() << " seconds" << std::endl;
 
 	
 	return 0;
