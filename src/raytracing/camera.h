@@ -58,6 +58,10 @@ class camera {
                         pixel_color += ray_color(r, max_depth, world);
                     }
                     pixel_color /= samples_per_pixel;
+                    pixel_color[0] = std::clamp(pixel_color[0], 0.0, 1.0);;
+                    pixel_color[1] = std::clamp(pixel_color[1], 0.0, 1.0);;
+                    pixel_color[2] = std::clamp(pixel_color[2], 0.0, 1.0);;
+
                     data[j * image_width * 4 + i * 4 + 0] = (unsigned char)(pixel_color.x() * 255);
                     data[j * image_width * 4 + i * 4 + 1] = (unsigned char)(pixel_color.y() * 255);
                     data[j * image_width * 4 + i * 4 + 2] = (unsigned char)(pixel_color.z() * 255);
