@@ -16,6 +16,7 @@ private:
 	
 	GUIColorPicker colorPicker;
 	GUIButton exitButton;
+	GUIButton renderButton;
 	GUIButton saveButton;
 	World* m_world;
 	int selectedSlot = 0;
