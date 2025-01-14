@@ -65,6 +65,7 @@
         "numeric": "cpp",
         "random": "cpp",
         "sstream": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "thread": "cpp"
     }
 }

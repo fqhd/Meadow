@@ -4,3 +4,5 @@
 *.lib
 build
 world.dat
+output.png
+.DS_Store

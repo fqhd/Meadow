@@ -14,6 +14,7 @@
 #include "hittable.h"
 #include "material.h"
 #include "external/stb_image_write.h"
+#include <thread>
 
 class camera {
   public:
@@ -35,27 +36,54 @@ class camera {
         initialize();
 
         unsigned char* data = new unsigned char[image_width * image_height * 4];
-        for(int i = 0; i < image_width * image_height * 4; i++) {
+        for (int i = 0; i < image_width * image_height * 4; i++) {
             data[i] = 0;
         }
 
-        for (int j = 0; j < image_height; j++) {
-            std::cout << "Scanlines remaining: " << (image_height - j) << ' ' << std::endl;
-            for (int i = 0; i < image_width; i++) {
-                color pixel_color(0,0,0);
-                for (int sample = 0; sample < samples_per_pixel; sample++) {
-                    ray r = get_ray(i, j);
-                    pixel_color += ray_color(r, max_depth, world);
+        const int numThreads = std::thread::hardware_concurrency();
+        std::cout << "Running with " << numThreads << " threads" << std::endl;
+
+        std::atomic<int> nextLine(0);  // Atomic counter for the next line to process
+        std::mutex outputMutex;        // Mutex for console output
+
+        auto renderTask = [&]() {
+            while (true) {
+                int j = nextLine.fetch_add(1);  // Atomically get the next line to render
+                if (j >= image_height) break;   // Stop if all lines are processed
+
+                {
+                    std::lock_guard<std::mutex> lock(outputMutex);
+                    std::cout << "Scanlines remaining: " << (image_height - j) << ' ' << std::endl;
                 }
-                pixel_color /= samples_per_pixel;
-                data[j * image_width * 4 + i * 4 + 0] = (unsigned char)(pixel_color.x() * 255);
-                data[j * image_width * 4 + i * 4 + 1] = (unsigned char)(pixel_color.y() * 255);
-                data[j * image_width * 4 + i * 4 + 2] = (unsigned char)(pixel_color.z() * 255);
-                data[j * image_width * 4 + i * 4 + 3] = 255;
+
+                for (int i = 0; i < image_width; i++) {
+                    color pixel_color(0, 0, 0);
+                    for (int sample = 0; sample < samples_per_pixel; sample++) {
+                        ray r = get_ray(i, j);
+                        pixel_color += ray_color(r, max_depth, world);
+                    }
+                    pixel_color /= samples_per_pixel;
+                    data[j * image_width * 4 + i * 4 + 0] = (unsigned char)(pixel_color.x() * 255);
+                    data[j * image_width * 4 + i * 4 + 1] = (unsigned char)(pixel_color.y() * 255);
+                    data[j * image_width * 4 + i * 4 + 2] = (unsigned char)(pixel_color.z() * 255);
+                    data[j * image_width * 4 + i * 4 + 3] = 255;
+                }
             }
+        };
+
+        // Create and launch threads
+        std::vector<std::thread> threads;
+        for (int t = 0; t < numThreads; t++) {
+            threads.emplace_back(renderTask);
+        }
+
+        // Join all threads
+        for (auto& t : threads) {
+            t.join();
         }
 
         stbi_write_png("output.png", image_width, image_height, 4, data, image_width * 4);
+        delete[] data;
     }
 
   private:
