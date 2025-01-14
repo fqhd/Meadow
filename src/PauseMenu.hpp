@@ -9,7 +9,7 @@ class PauseMenu {
 public:
 
 	void init(World* world);
-	void update(float deltaTime, GameState& state);
+	void update(float deltaTime, GameState& state, bool& shouldRender);
 	void render(Hotbar* hotbar);
 
 private:

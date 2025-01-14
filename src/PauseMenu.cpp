@@ -10,7 +10,7 @@ void PauseMenu::init(World* world) {
 	colorPicker.init();
 }
 
-void PauseMenu::update(float deltaTime, GameState& state) {
+void PauseMenu::update(float deltaTime, GameState& state, bool& shouldRender) {
 	exitButton.update(deltaTime);
 	saveButton.update(deltaTime);
 	renderButton.update(deltaTime);
@@ -24,6 +24,10 @@ void PauseMenu::update(float deltaTime, GameState& state) {
 	if (exitButton.isPressed()) {
 		state = GameState::Exit;
 		InputManager::setMouseGrabbed(false);
+	}
+	if (renderButton.isPressed()) {
+		shouldRender = true;
+		state = GameState::Exit;
 	}
 }
 
