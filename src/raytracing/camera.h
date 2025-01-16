@@ -16,6 +16,16 @@
 #include "external/stb_image_write.h"
 #include <thread>
 
+double clamp(double v, double a, double b) {
+    if (v < a) {
+        return a;
+    }
+    if (v > b) {
+        return b;
+    }
+    return v;
+}
+
 class camera {
   public:
     int    image_height      = 100;  // Rendered image height
@@ -57,10 +67,11 @@ class camera {
                         ray r = get_ray(i, j);
                         pixel_color += ray_color(r, max_depth, world);
                     }
+
                     pixel_color /= samples_per_pixel;
-                    pixel_color[0] = std::clamp(pixel_color[0], 0.0, 1.0);;
-                    pixel_color[1] = std::clamp(pixel_color[1], 0.0, 1.0);;
-                    pixel_color[2] = std::clamp(pixel_color[2], 0.0, 1.0);;
+                    pixel_color[0] = clamp(pixel_color[0], 0.0, 1.0);;
+                    pixel_color[1] = clamp(pixel_color[1], 0.0, 1.0);;
+                    pixel_color[2] = clamp(pixel_color[2], 0.0, 1.0);;
 
                     data[j * image_width * 4 + i * 4 + 0] = (unsigned char)(pixel_color.x() * 255);
                     data[j * image_width * 4 + i * 4 + 1] = (unsigned char)(pixel_color.y() * 255);
