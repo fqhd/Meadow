@@ -15,6 +15,7 @@ public:
 	void update(float dt, GameState& state);
 	void render();
 	void destroy();
+	void saveRenderState();
 
 	World world;
 	Player player;

@@ -17,7 +17,7 @@ namespace Utils {
 	bool isInside(const glm::ivec2& mousePos, const glm::vec4& destRect);
 	bool isInRange(const glm::vec3& a, const glm::vec3& b, float range);
 	glm::vec4 toScreenCoords(glm::vec4 rect, int w, int th);
-
+	std::string generateRandomString(int length);
+	void writeStringToFile(const std::string& text, const std::string& filename);
 
 }
-

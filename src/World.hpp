@@ -29,6 +29,7 @@ public:
 	unsigned int getWorldSize();
 	void updateMeshes();
 	void render(Camera& camera);
+	std::string getWorldDataBase64();
 
 	void save();
 

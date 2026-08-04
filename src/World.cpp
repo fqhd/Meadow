@@ -1,12 +1,12 @@
 #include "World.hpp"
 #include <fstream>
-
+#include "base64.h"
 
 
 void World::init(Block* data, unsigned int worldSize){
 	m_data = data;
 	m_worldSize = worldSize;
-	
+
 
 	m_chunks = new Chunk[m_worldSize * m_worldSize * 4];
 	for(int i = 0; i < m_worldSize * m_worldSize * 4; i++) {
@@ -41,6 +41,49 @@ void World::render(Camera& camera) {
 	}
 
 	m_shader.unbind();
+}
+
+std::string World::getWorldDataBase64() {
+    struct BlockSegment {
+        Block type;
+        int count;
+    };
+
+    std::vector<BlockSegment> compressed;
+
+    BlockSegment last;
+    last.count = 1;
+    last.type = m_data[0];
+
+    int blockCount = CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * m_worldSize * m_worldSize * 4;
+    for (int i = 1; i < blockCount; i++) {
+        if (m_data[i].r == last.type.r &&
+            m_data[i].g == last.type.g &&
+            m_data[i].b == last.type.b &&
+            m_data[i].visible == last.type.visible) {
+            last.count++;
+        } else {
+            compressed.push_back(last);
+            last.count = 1;
+            last.type = m_data[i];
+        }
+    }
+
+    compressed.push_back(last);
+
+    std::vector<unsigned char> rawData;
+
+    rawData.reserve(compressed.size() * sizeof(BlockSegment));
+
+    for (size_t i = 0; i < compressed.size(); i++) {
+        rawData.push_back(compressed[i].type.r);
+        rawData.push_back(compressed[i].type.g);
+        rawData.push_back(compressed[i].type.b);
+        rawData.push_back(compressed[i].type.visible);
+        rawData.push_back(compressed[i].count);
+    }
+
+    return base64_encode(rawData.data(), rawData.size());
 }
 
 void World::save() {
@@ -116,7 +159,7 @@ Block World::getBlock(int _x, int _y, int _z){
 	if (!isBlockInLocalWorld(_x, _y, _z)) {
 		return Block(0, 0, 0, false);
 	}
-	
+
 	return m_data[(_y * CHUNK_WIDTH * CHUNK_WIDTH * m_worldSize * m_worldSize) + (_z * CHUNK_WIDTH * m_worldSize) + _x];
 }
 

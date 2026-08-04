@@ -20,15 +20,15 @@ int main() {
 	std::ifstream file("world.dat", std::ios::in | std::ios::binary);
 	if (!file.good()) {
 		std::cout << "Could not find world save file, creating a new one..." << std::endl;
-		std::cout << "Enter the world size(1-32): ";
+		std::cout << "Enter the world size(1-8): ";
 		std::string userInput;
 		std::getline(std::cin, userInput);
 		if (!isUnsignedInteger(userInput)) {
 			throw std::runtime_error("The world size must be an unsigned integer(a positive whole number)");
 		}
 		worldSize = std::stoi(userInput);
-		if (worldSize > 32 || worldSize <= 0) {
-			throw std::runtime_error("Invalid range. The world size must be between 1 and 32");
+		if (worldSize > 8 || worldSize <= 0) {
+			throw std::runtime_error("Invalid range. The world size must be between 1 and 8");
 		}
 
 		data = new Block[CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * worldSize * worldSize * 4];
