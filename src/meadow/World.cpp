@@ -1,6 +1,6 @@
 #include "World.hpp"
 #include <fstream>
-#include "base64.h"
+#include "../base64.h"
 
 
 void World::init(Block* data, unsigned int worldSize){
