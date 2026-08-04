@@ -3,7 +3,6 @@
 // Retrieved 2026-08-04, License - CC BY-SA 4.0
 
 #include "base64.h"
-#include <iostream>
 
 static const std::string base64_chars =
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
