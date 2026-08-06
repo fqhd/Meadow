@@ -5,7 +5,7 @@
 #include "GameState.hpp"
 #include "PauseMenu.hpp"
 #include <algorithm>
-
+#include <cstring>
 
 static bool isUnsignedInteger(const std::string& str) {
 	return !str.empty() && std::all_of(str.begin(), str.end(), ::isdigit);
