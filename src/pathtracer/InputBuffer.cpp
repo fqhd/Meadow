@@ -1,6 +1,6 @@
 #include "InputBuffer.h"
-#include <iostream>
 #include "VulkanUtils.h"
+#include <cstring>
 
 
 void InputBuffer::Create(VkPhysicalDevice physicalDevice, VkDevice device, VkDeviceSize size)
