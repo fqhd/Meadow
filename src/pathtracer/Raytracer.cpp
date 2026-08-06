@@ -27,7 +27,7 @@ Raytracer::Raytracer(int width, int height, const glm::vec3& camPos, const glm::
 
     memcpy(segments.data(), bytes.data(), bytes.size());
 
-    m_WorldDataSizeInBytes = worldSize * worldSize * 16 * 16 * 16 * 2 * 4 + sizeof(SceneData);
+    m_WorldDataSizeInBytes = worldSize * worldSize * 16 * 16 * 16 * 4 * 4 + sizeof(SceneData);
     m_WorldData = new unsigned char[m_WorldDataSizeInBytes];
 
     int idx = sizeof(SceneData);
