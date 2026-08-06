@@ -3,7 +3,7 @@
 #include <cstring>
 
 Raytracer::Raytracer(int width, int height, const glm::vec3& camPos, const glm::vec3& lookAt, float fov, float aperture, float focusDistance, int worldSize, const std::string& encoding)
-	: Camera(camPos, lookAt, width, height, fov, aperture, focusDistance), Canvas(width, height),
+	: Cam(camPos, lookAt, width, height, fov, aperture, focusDistance), Canvas(width, height),
 	m_Width(width), m_Height(height)
 {
 	m_WorldSize = worldSize;
@@ -50,7 +50,7 @@ void Raytracer::Draw(int numAccumFrames)
     memset(data, 0, m_Width * m_Height * 4 * sizeof(uint64_t));
 
     for (int i = 0; i < numAccumFrames; i++) {
-        Camera.Update();
+        Cam.Update();
         UpdateGPUData();
         m_GPUVK->Run(Canvas, m_WorldData, m_WorldDataSizeInBytes);
         m_FrameCount++;
@@ -75,14 +75,14 @@ void Raytracer::UpdateGPUData()
 	data.frameSeed = m_FrameCount;
 
 	// Camera
-	data.camera.position = Camera.Position;
-	data.camera.lowerLeftCorner = Camera.LowerLeftCorner;
-	data.camera.horizontal = Camera.Horizontal;
-	data.camera.vertical = Camera.Vertical;
-	data.camera.w = Camera.W;
-	data.camera.u = Camera.U;
-	data.camera.v = Camera.V;
-	data.camera.lensRadius = Camera.LensRadius;
+	data.camera.position = Cam.Position;
+	data.camera.lowerLeftCorner = Cam.LowerLeftCorner;
+	data.camera.horizontal = Cam.Horizontal;
+	data.camera.vertical = Cam.Vertical;
+	data.camera.w = Cam.W;
+	data.camera.u = Cam.U;
+	data.camera.v = Cam.V;
+	data.camera.lensRadius = Cam.LensRadius;
 
 	memcpy(m_WorldData, &data, sizeof(SceneData));
 }
