@@ -41,12 +41,12 @@ int main(int argc, char* argv[]) {
     }
 
 	Raytracer raytracer(
-		800, 600, camPos, camPos + camDir, 70.0f, 0.5f, 10.0f, worldSize, worldEnc
+		1920, 1080, camPos, camPos + camDir, 50.0f, 1.5f, 10.0f, worldSize, worldEnc
 	);
 
 	std::cout << "Started Timer" << std::endl;
 	Benchmarker::Start("Draw");
-    raytracer.Draw(50);
+    raytracer.Draw(100);
 	Benchmarker::End("Draw");
 	arg1.erase(arg1.size() - 3);
 	arg1 += "png";
