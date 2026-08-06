@@ -48,7 +48,9 @@ int main(int argc, char* argv[]) {
 	Benchmarker::Start("Draw");
     raytracer.Draw(50);
 	Benchmarker::End("Draw");
-	raytracer.Canvas.Save("output.png");
+	arg1.erase(arg1.size() - 3);
+	arg1 += "png";
+	raytracer.Canvas.Save(arg1);
 
 	return 0;
 }
