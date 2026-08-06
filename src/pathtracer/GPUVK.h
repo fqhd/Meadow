@@ -6,7 +6,7 @@
 #include "OutputBuffer.h"
 #include "InputBuffer.h"
 
-const int WORKGROUP_SIZE = 32;
+const int WORKGROUP_SIZE = 8;
 
 // Used for validating return values of Vulkan API calls.
 #define VK_CHECK_RESULT(f) 																				\

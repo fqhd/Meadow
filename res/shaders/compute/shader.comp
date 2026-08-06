@@ -2,7 +2,7 @@
 #extension GL_ARB_separate_shader_objects : enable
 
 #define PI 3.14159265359
-#define WORKGROUP_SIZE 32
+#define WORKGROUP_SIZE 8
 #define CHUNK_WIDTH 16
 
 // Path tracing settings
