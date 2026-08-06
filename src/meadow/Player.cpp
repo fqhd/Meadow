@@ -1,7 +1,5 @@
 #include "Player.hpp"
-#include "Utils.hpp"
-#include <iostream>
-#include <algorithm>
+#include "InputManager.hpp"
 
 const unsigned int PRECISION = 50;
 const unsigned int REACH_DISTANCE = 5;

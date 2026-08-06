@@ -12,6 +12,7 @@ static bool isUnsignedInteger(const std::string& str) {
 }
 
 int main() {
+    srand(1);
 
 	Block* data = nullptr;
 	unsigned int worldSize;

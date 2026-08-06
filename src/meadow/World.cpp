@@ -46,7 +46,7 @@ void World::render(Camera& camera) {
 std::string World::getWorldDataBase64() {
     struct BlockSegment {
         Block type;
-        int count;
+        unsigned int count;
     };
 
     std::vector<BlockSegment> compressed;
@@ -71,19 +71,9 @@ std::string World::getWorldDataBase64() {
 
     compressed.push_back(last);
 
-    std::vector<unsigned char> rawData;
+    std::string base64_str = base64_encode((BYTE*)compressed.data(), compressed.size() * sizeof(BlockSegment));
 
-    rawData.reserve(compressed.size() * sizeof(BlockSegment));
-
-    for (size_t i = 0; i < compressed.size(); i++) {
-        rawData.push_back(compressed[i].type.r);
-        rawData.push_back(compressed[i].type.g);
-        rawData.push_back(compressed[i].type.b);
-        rawData.push_back(compressed[i].type.visible);
-        rawData.push_back(compressed[i].count);
-    }
-
-    return base64_encode(rawData.data(), rawData.size());
+    return base64_str;
 }
 
 void World::save() {

@@ -1,4 +1,5 @@
 #include "Camera.hpp"
+#include "InputManager.hpp"
 
 const float FOV = 90.0f;
 

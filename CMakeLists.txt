@@ -21,9 +21,9 @@ set_target_properties(meadow PROPERTIES
 
 file(GLOB_RECURSE SRC_FILES "${CMAKE_SOURCE_DIR}/src/pathtracer/*.cpp")
 
-add_executable(pathtracer ${SRC_FILES})
+add_executable(pathtracer ${SRC_FILES} ./src/base64.cpp)
 
-target_link_libraries(pathtracer PRIVATE Vulkan::Vulkan)
+target_link_libraries(pathtracer PRIVATE Vulkan::Vulkan glm)
 
 set_target_properties(pathtracer PROPERTIES
     CXX_STANDARD 17

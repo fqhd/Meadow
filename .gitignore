@@ -4,3 +4,5 @@
 *.lib
 build
 world.dat
+*.txt
+output.png

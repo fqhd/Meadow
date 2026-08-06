@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Chunk.hpp"
-#include "InputManager.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
 class Camera {
@@ -31,5 +29,3 @@ private:
 	glm::mat4 m_viewMatrix;
 
 };
-
-

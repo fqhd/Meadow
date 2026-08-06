@@ -1,6 +1,7 @@
 #include "Game.hpp"
 #include "Window.hpp"
 #include "GUIRenderer.hpp"
+#include "InputManager.hpp"
 
 void Game::init(Block* data, unsigned int worldSize) {
 	world.init(data, worldSize);
@@ -18,6 +19,7 @@ void Game::saveRenderState() {
     contents += std::to_string(camera.getPosition().x) + " " + std::to_string(camera.getPosition().y) + " " + std::to_string(camera.getPosition().z);
     contents += "\nCameraDirection: ";
     contents += std::to_string(camera.getForward().x) + " " + std::to_string(camera.getForward().y) + " " + std::to_string(camera.getForward().z);
+    contents += "\nWorldSize: " + std::to_string(world.getWorldSize());
     contents += "\nWorldData: " + world.getWorldDataBase64();
     Utils::writeStringToFile(contents, fileName);
     std::cout << "Render state saved: " << fileName << std::endl;
