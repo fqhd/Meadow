@@ -1,5 +1,6 @@
 #include "Raytracer.h"
 #include "../base64.h"
+#include <cstring>
 
 Raytracer::Raytracer(int width, int height, const glm::vec3& camPos, const glm::vec3& lookAt, float fov, float aperture, float focusDistance, int worldSize, const std::string& encoding)
 	: Camera(camPos, lookAt, width, height, fov, aperture, focusDistance), Canvas(width, height),
