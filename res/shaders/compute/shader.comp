@@ -68,7 +68,9 @@ layout(std430, binding = 1) buffer inputBuffer
     uint blocks[];
 };
 
-// PCG hash - much better statistical properties
+// ------------------------------------------------------------------
+// RNG (PCG init + LCG generation)
+// ------------------------------------------------------------------
 uint pcgHash(uint v)
 {
     uint state = v * 747796405u + 2891336453u;
@@ -76,43 +78,89 @@ uint pcgHash(uint v)
     return (word >> 22u) ^ word;
 }
 
-// Better initialization using PCG
 void initRNG(uvec2 pixel, uint sampleIndex, inout uint state)
 {
-    // Combine multiple inputs using PCG hash
     uint h = pcgHash(pixel.x);
     h = pcgHash(h + pixel.y);
     h = pcgHash(h + sampleIndex);
-    h = pcgHash(h + frameSeed);  // frameSeed from CPU
+    h = pcgHash(h + frameSeed);
     state = (h == 0u) ? 1u : h;
 }
 
-// LCG-based random number generation (better than xorshift for GPU)
 float rand(inout uint state)
 {
     state = state * 1664525u + 1013904223u;
-    return float(state & 0x00FFFFFFu) / float(0x01000000u); // Use only top 24 bits for better randomness
+    return float(state & 0x00FFFFFFu) / float(0x01000000u);
 }
 
 // ------------------------------------------------------------------
-// Camera ray
+// Camera & DOF helpers
 // ------------------------------------------------------------------
-Ray createRay(vec3 o, vec3 d)
+float getFocalDistance()
 {
+    // The viewport plane distance from origin along the view direction (-w)
+    // lowerLeftCorner - origin = -half*u - half*v - w  => dot with w = -1
+    // so focalDist = -dot(lowerLeftCorner - origin, w) = 1 (in typical setups)
+    vec3 origin = toVec3(camera.origin);
+    vec3 llc    = toVec3(camera.lowerLeftCorner);
+    vec3 w      = toVec3(camera.w);
+    return -dot(llc - origin, w);
+}
+
+// Sample a random point inside a unit disk (concentric mapping for better distribution)
+vec2 sampleRandomInUnitDisk(inout uint rngState)
+{
+    float r1 = rand(rngState);
+    float r2 = rand(rngState);
+    float r = sqrt(r1);
+    float theta = 2.0 * PI * r2;
+    return r * vec2(cos(theta), sin(theta));
+}
+
+// ------------------------------------------------------------------
+// Camera ray with thin lens depth of field
+// ------------------------------------------------------------------
+Ray getRayDOF(float x, float y, float focalDist, inout uint rngState)
+{
+    vec3 origin    = toVec3(camera.origin);
+    vec3 llc       = toVec3(camera.lowerLeftCorner);
+    vec3 horizontal = toVec3(camera.horizontal);
+    vec3 vertical   = toVec3(camera.vertical);
+    vec3 u          = toVec3(camera.u);
+    vec3 v          = toVec3(camera.v);
+    float lensRad   = camera.lensRadius;
+
+    // Point on the viewport plane (pixel target)
+    vec3 p = llc + x * horizontal + y * vertical;
+    // Direction from camera origin to that point
+    vec3 dir = normalize(p - origin);
+
+    // If lens radius is negligible, return standard ray
+    if (lensRad <= 0.0001)
+    {
+        Ray r;
+        r.origin = origin;
+        r.direction = dir;
+        return r;
+    }
+
+    // Find the focus point on the focal plane
+    // focal plane: dot(point - origin, w) = -focalDist
+    // ray equation: origin + t*dir  => t = -focalDist / dot(dir, w)
+    vec3 w = toVec3(camera.w);
+    float denom = dot(dir, w);
+    // Avoid division by zero (if ray is exactly perpendicular to w, which shouldn't happen)
+    float t = (abs(denom) > 1e-6) ? (-focalDist / denom) : focalDist;
+    vec3 focusPoint = origin + t * dir;
+
+    // Sample a point on the lens (disk in the u-v plane at origin)
+    vec2 lensDisk = sampleRandomInUnitDisk(rngState) * lensRad;
+    vec3 lensPoint = origin + u * lensDisk.x + v * lensDisk.y;
+
     Ray r;
-    r.origin = o;
-    r.direction = normalize(d);
+    r.origin = lensPoint;
+    r.direction = normalize(focusPoint - lensPoint);
     return r;
-}
-
-Ray getRay(float x, float y)
-{
-    return createRay(
-        toVec3(camera.origin),
-        toVec3(camera.lowerLeftCorner)
-        + x * toVec3(camera.horizontal)
-        + y * toVec3(camera.vertical)
-        - toVec3(camera.origin));
 }
 
 void writeColor(vec3 c)
@@ -175,9 +223,7 @@ vec3 blockColor(uint b)
 bool isLightSource(vec3 albedo)
 {
     float maxComp = max(max(albedo.r, albedo.g), albedo.b);
-    // At least one component above 230/255
     if (maxComp <= 230.0/255.0) return false;
-    // Exclude pure white (all components > 230/255)
     if (all(greaterThan(albedo, vec3(230.0/255.0)))) return false;
     return true;
 }
@@ -215,7 +261,7 @@ HitRecord trace(Ray ray)
     if (!intersectWorldBounds(ray, tNear, tFar))
         return hit;
 
-    // --- Handle ray starting outside the world ---
+    // Handle ray starting outside the world
     if (tNear > 0.0)
     {
         vec3 entryPoint = ray.origin + ray.direction * tNear;
@@ -234,7 +280,6 @@ HitRecord trace(Ray ray)
             if (isLightSource(hit.albedo))
                 hit.emission = hit.albedo * LIGHT_MULTIPLIER;
 
-            // Normal from dominant entry direction
             vec3 absDir = abs(ray.direction);
             if (absDir.x >= absDir.y && absDir.x >= absDir.z)
                 hit.normal = vec3(-sign(ray.direction.x), 0.0, 0.0);
@@ -248,7 +293,6 @@ HitRecord trace(Ray ray)
         ray.origin = entryPoint;
     }
 
-    // Starting voxel inside the world
     ivec3 voxel;
     if (tNear > 0.0)
         voxel = ivec3(floor(ray.origin + ray.direction * 0.0001));
@@ -338,7 +382,7 @@ void sampleHemisphereCosine(vec3 normal, inout uint rngState,
 }
 
 // ------------------------------------------------------------------
-// Path tracing kernel
+// Path tracing kernel with depth of field
 // ------------------------------------------------------------------
 void main()
 {
@@ -347,6 +391,7 @@ void main()
         return;
 
     uvec2 pixel = gl_GlobalInvocationID.xy;
+    float focalDist = getFocalDistance(); // distance from lens to viewport plane
     vec3 accumulated = vec3(0.0);
 
     for (uint s = 0; s < NUM_SAMPLES; ++s)
@@ -357,7 +402,8 @@ void main()
         float u = (float(pixel.x) + rand(rngState)) / float(width - 1);
         float v = (float(pixel.y) + rand(rngState)) / float(height - 1);
 
-        Ray ray = getRay(u, v);
+        // Create ray with thin-lens depth of field
+        Ray ray = getRayDOF(u, v, focalDist, rngState);
         vec3 throughput = vec3(1.0);
         vec3 radiance   = vec3(0.0);
 
@@ -371,7 +417,6 @@ void main()
                 break;
             }
 
-            // If we hit a light source, add its emission and stop
             if (length(hit.emission) > 0.0)
             {
                 radiance += throughput * hit.emission;
@@ -387,7 +432,7 @@ void main()
                 throughput /= p;
             }
 
-            // Sample new direction (Lambertian)
+            // Sample new direction
             vec3 wi;
             float pdf;
             sampleHemisphereCosine(hit.normal, rngState, wi, pdf);

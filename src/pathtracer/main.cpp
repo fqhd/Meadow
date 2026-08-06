@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
     }
 
 	Raytracer raytracer(
-		1920, 1080, camPos, camPos + camDir, 50.0f, 1.5f, 10.0f, worldSize, worldEnc
+		1280, 720, camPos, camPos + camDir, 40.0f, 0.5f, 18.0f, worldSize, worldEnc
 	);
 
 	std::cout << "Started Timer" << std::endl;
