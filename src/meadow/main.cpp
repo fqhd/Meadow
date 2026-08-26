@@ -34,11 +34,12 @@ int main() {
 
 		data = new Block[CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * worldSize * worldSize * worldSize];
 		memset(data, 0, sizeof(Block) * CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * worldSize * worldSize * worldSize);
-		for (int i = 0; i < CHUNK_WIDTH * worldSize; i++) {
-			for (int j = 0; j < CHUNK_WIDTH * worldSize; j++) {
-				data[i * CHUNK_WIDTH * worldSize + j] = Block(255, 255, 255, true);
-			}
-		}
+
+		// for (int i = 0; i < CHUNK_WIDTH * worldSize; i++) {
+		// 	for (int j = 0; j < CHUNK_WIDTH * worldSize; j++) {
+		// 		data[i * CHUNK_WIDTH * worldSize + j] = Block(255, 255, 255, true);
+		// 	}
+		// }
 	}
 	else {
 		file.read(reinterpret_cast<char*>(&worldSize), sizeof(worldSize));

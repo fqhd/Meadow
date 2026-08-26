@@ -18,8 +18,8 @@ void Camera::update(float deltaTime) {
 	m_targetP -= deltaMousePos.y * mouseSensitivity;
 	m_targetY -= deltaMousePos.x * mouseSensitivity;
 
-	m_pitch += (m_targetP - m_pitch) * deltaTime * 2.0f;
-	m_yaw += (m_targetY - m_yaw) * deltaTime * 2.0f;
+	m_pitch += (m_targetP - m_pitch) * deltaTime * 50.0f;
+	m_yaw += (m_targetY - m_yaw) * deltaTime * 50.0f;
 
 
 	if (m_pitch >= 89.0f) {

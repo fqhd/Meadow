@@ -19,7 +19,7 @@ void Raytracer::Draw(const WorldData& wData, int numAccumFrames)
     memset(data, 0, m_Width * m_Height * 4 * sizeof(uint64_t));
 
     for (int i = 0; i < numAccumFrames; i++) {
-        UpdateGPUData(wData);
+        UpdateGPUData(wData); // Make sure this function is relatively light (doesn't decompress world data every frame)
         m_GPUVK->Run(Canvas, m_WorldData, m_WorldDataSizeInBytes);
         m_FrameCount++;
 

@@ -179,7 +179,7 @@ vec3 skyColor(vec3 d)
 // World helpers
 // ------------------------------------------------------------------
 int worldWidth()  { return CHUNK_WIDTH * worldSize; }
-int worldHeight() { return CHUNK_WIDTH * 4; }
+int worldHeight() { return CHUNK_WIDTH * worldSize; }
 int worldDepth()  { return CHUNK_WIDTH * worldSize; }
 
 bool inWorld(ivec3 p)

@@ -13,7 +13,7 @@ void Player::init(Camera* camera, World* world) {
 }
 
 void Player::update(float deltaTime) {
-    position += (targetPosition - position) * deltaTime * 0.5f;
+    position += (targetPosition - position) * deltaTime * 10.0f;
 	movement(deltaTime);
 	placeAndBreakBlocks();
 	hotbar.update();

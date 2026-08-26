@@ -9,6 +9,7 @@ void Game::init(Block* data, unsigned int worldSize) {
 	camera.init(WINDOW_WIDTH, WINDOW_HEIGHT, player.getEyePos());
 	outline.init();
 	skybox.init();
+	world.setBlock(worldSize * 8, worldSize * 8, worldSize * 8, Block(255, 255, 255, true));
 }
 
 void Game::saveRenderState(const std::string& path) {
@@ -22,6 +23,58 @@ void Game::saveRenderState(const std::string& path) {
     contents += "\nWorldData: " + world.getWorldDataBase64();
     Utils::writeStringToFile(contents, path);
     std::cout << "Render state saved: " << path << std::endl;
+}
+
+void Game::runDLA() {
+    std::uniform_int_distribution<int> dist(0, (world.getWorldSize() * 16) - 1);
+    std::uniform_int_distribution<int> direction(0, 5);
+
+    int x = dist(rng);
+    int y = dist(rng);
+    int z = dist(rng);
+
+
+    while (true) {
+        x %= world.getWorldSize() * 16;
+        y %= world.getWorldSize() * 16;
+        z %= world.getWorldSize() * 16;
+
+        if (world.getBlock(x + 1, y, z).visible ||
+            world.getBlock(x - 1, y, z).visible ||
+            world.getBlock(x, y + 1, z).visible ||
+            world.getBlock(x, y - 1, z).visible ||
+            world.getBlock(x, y, z + 1).visible ||
+            world.getBlock(x, y, z - 1).visible) {
+
+            float cx = world.getWorldSize() * 8.0f;
+            float cy = world.getWorldSize() * 8.0f;
+            float cz = world.getWorldSize() * 8.0f;
+
+            float dx = x - cx;
+            float dy = y - cy;
+            float dz = z - cz;
+
+            float distance = std::sqrt(dx*dx + dy*dy + dz*dz);
+
+            float t = distance * 0.03f;
+
+            int r = (std::sin(t) * 0.5f + 0.5f) * 255;
+            int g = (std::sin(t + 2.0f) * 0.5f + 0.5f) * 255;
+            int b = (std::sin(t + 4.0f) * 0.5f + 0.5f) * 255;
+
+            world.setBlock(x, y, z, Block(r, g, b, true));
+            return;
+        }
+
+        switch (direction(rng)) {
+            case 0: x++; break;
+            case 1: x--; break;
+            case 2: y++; break;
+            case 3: y--; break;
+            case 4: z++; break;
+            case 5: z--; break;
+        }
+    }
 }
 
 void Game::update(float dt, GameState& state) {
@@ -38,6 +91,15 @@ void Game::update(float dt, GameState& state) {
 
 	if (InputManager::isKeyPressed(GLFW_KEY_R)) {
 	    recording = !recording;
+	}
+
+	if (InputManager::isKeyPressed(GLFW_KEY_L)) {
+	    dla = !dla;
+	}
+
+	if (dla) {
+        runDLA();
+	    runDLA();
 	}
 
 	if (recording) {
