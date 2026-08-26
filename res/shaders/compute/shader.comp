@@ -222,10 +222,7 @@ vec3 blockColor(uint b)
 // ------------------------------------------------------------------
 bool isLightSource(vec3 albedo)
 {
-    float maxComp = max(max(albedo.r, albedo.g), albedo.b);
-    if (maxComp <= 230.0/255.0) return false;
-    if (all(greaterThan(albedo, vec3(230.0/255.0)))) return false;
-    return true;
+    return false;
 }
 
 // ------------------------------------------------------------------
