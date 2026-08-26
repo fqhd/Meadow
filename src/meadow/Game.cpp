@@ -41,16 +41,16 @@ void Game::update(float dt, GameState& state) {
 	}
 
 	if (recording) {
-	    std::string path = "recordings/frame_";
-		path += std::to_string(frame);
-		path += ".txt";
+        std::string path = "recordings/frame_";
+       	path += std::string(4 - std::to_string(frame).length(), '0') + std::to_string(frame);
+       	path += ".txt";
 		saveRenderState(path);
 		frame++;
 	}
 
 	player.update(dt);
 	camera.setPosition(player.getEyePos());
-	camera.update();
+	camera.update(dt);
 }
 
 void Game::render() {

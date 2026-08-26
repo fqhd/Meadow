@@ -9,9 +9,11 @@ void Player::init(Camera* camera, World* world) {
 	m_world = world;
 	float worldWidthInBlocks = world->getWorldSize() * CHUNK_WIDTH;
 	position = glm::vec3(worldWidthInBlocks / 2.0f, 0.0f, worldWidthInBlocks / 2.0f);
+	targetPosition = position;
 }
 
 void Player::update(float deltaTime) {
+    position += (targetPosition - position) * deltaTime * 0.5f;
 	movement(deltaTime);
 	placeAndBreakBlocks();
 	hotbar.update();
@@ -35,32 +37,32 @@ void Player::placeAndBreakBlocks() {
 
 void Player::movement(float deltaTime) {
 	if (sprinting) {
-		speed = 12.0f;
+		speed = 16.0f;
 	}
 	else {
-		speed = 4.0f;
+		speed = 5.0f;
 	}
 	glm::vec3 camForward = m_camera->getForward();
 	glm::vec3 forward = glm::normalize(glm::vec3(camForward.x, 0.0f, camForward.z));
 	glm::vec3 side = glm::normalize(glm::cross(camForward, glm::vec3(0.0f, 1.0f, 0.0f)));
 
 	if (InputManager::isKeyDown(GLFW_KEY_W)) {
-		position += forward * speed * deltaTime;
+		targetPosition += forward * speed * deltaTime;
 	}
 	if (InputManager::isKeyDown(GLFW_KEY_S)) {
-		position -= forward * speed * deltaTime;
+		targetPosition -= forward * speed * deltaTime;
 	}
 	if (InputManager::isKeyDown(GLFW_KEY_A)) {
-		position -= side * speed * deltaTime;
+		targetPosition -= side * speed * deltaTime;
 	}
 	if (InputManager::isKeyDown(GLFW_KEY_D)) {
-		position += side * speed * deltaTime;
+		targetPosition += side * speed * deltaTime;
 	}
 	if (InputManager::isKeyDown(GLFW_KEY_SPACE)) {
-		position.y += speed * deltaTime;
+		targetPosition.y += speed * deltaTime;
 	}
 	if (InputManager::isKeyDown(GLFW_KEY_LEFT_SHIFT)) {
-		position.y -= speed * deltaTime;
+		targetPosition.y -= speed * deltaTime;
 	}
 }
 

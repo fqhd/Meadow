@@ -32,8 +32,8 @@ int main() {
 			throw std::runtime_error("Invalid range. The world size must be between 1 and 8");
 		}
 
-		data = new Block[CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * worldSize * worldSize * 4];
-		memset(data, 0, sizeof(Block) * CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * worldSize * worldSize * 4);
+		data = new Block[CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * worldSize * worldSize * worldSize];
+		memset(data, 0, sizeof(Block) * CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * worldSize * worldSize * worldSize);
 		for (int i = 0; i < CHUNK_WIDTH * worldSize; i++) {
 			for (int j = 0; j < CHUNK_WIDTH * worldSize; j++) {
 				data[i * CHUNK_WIDTH * worldSize + j] = Block(255, 255, 255, true);
@@ -45,13 +45,13 @@ int main() {
 		if (!file) {
 			throw std::runtime_error("Failed to load world, file format invalid");
 		}
-		if (worldSize <= 0 || worldSize > 32) {
+		if (worldSize <= 0 || worldSize > 8) {
 			throw std::runtime_error("Failed to load world, world size out of range");
 		}
 
-		data = new Block[CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * worldSize * worldSize * 4];
+		data = new Block[CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * worldSize * worldSize * worldSize];
 
-		file.read(reinterpret_cast<char*>(data), CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * worldSize * worldSize * 4 * sizeof(Block));
+		file.read(reinterpret_cast<char*>(data), CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * worldSize * worldSize * worldSize * sizeof(Block));
 		if (!file) {
 			throw std::runtime_error("Failed to load world, insufficient world data");
 		}

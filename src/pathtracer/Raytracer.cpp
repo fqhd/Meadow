@@ -7,7 +7,7 @@ Raytracer::Raytracer(int width, int height, float fov, float aperture, float foc
 	m_Width(width), m_Height(height)
 {
 	m_WorldSize = worldSize;
-	m_WorldDataSizeInBytes = worldSize * worldSize * 16 * 16 * 16 * 4 * 4 + sizeof(SceneData);
+	m_WorldDataSizeInBytes = worldSize * worldSize * worldSize * 16 * 16 * 16 * 4 + sizeof(SceneData);
     m_WorldData = new unsigned char[m_WorldDataSizeInBytes];
 
     m_GPUVK = std::make_unique<GPUVK>(m_Width, m_Height, m_WorldDataSizeInBytes);

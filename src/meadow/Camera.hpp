@@ -7,7 +7,7 @@ public:
 
 	void init(int w, int h, glm::vec3 position);
 
-	void update();
+	void update(float deltaTime);
 	float getPitch() const;
 	float getYaw() const;
 	const glm::mat4& getProjectionMatrix() const;
@@ -23,6 +23,8 @@ private:
 
 	float m_pitch = 0.0f;
 	float m_yaw = 0.0f;
+	float m_targetP = 0.0f;
+	float m_targetY = 0.0f;
 	glm::vec3 m_position;
 	glm::vec3 m_forward;
 	glm::mat4 m_projectionMatrix;

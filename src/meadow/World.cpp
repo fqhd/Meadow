@@ -8,8 +8,8 @@ void World::init(Block* data, unsigned int worldSize){
 	m_worldSize = worldSize;
 
 
-	m_chunks = new Chunk[m_worldSize * m_worldSize * 4];
-	for(int i = 0; i < m_worldSize * m_worldSize * 4; i++) {
+	m_chunks = new Chunk[m_worldSize * m_worldSize * m_worldSize];
+	for(int i = 0; i < m_worldSize * m_worldSize * m_worldSize; i++) {
 		m_chunks[i].init();
 	}
 
@@ -18,7 +18,7 @@ void World::init(Block* data, unsigned int worldSize){
 }
 
 void World::destroy(){
-	for(int i = 0; i < m_worldSize * m_worldSize * 4; i++) {
+	for(int i = 0; i < m_worldSize * m_worldSize * m_worldSize; i++) {
 		m_chunks[i].destroy();
 	}
 	delete[] m_chunks;
@@ -36,7 +36,7 @@ void World::render(Camera& camera) {
 	m_shader.loadUniform("projection", camera.getProjectionMatrix());
 	m_shader.loadUniform("view", camera.getViewMatrix());
 
-	for(int i = 0; i < m_worldSize * m_worldSize * 4; i++) {
+	for(int i = 0; i < m_worldSize * m_worldSize * m_worldSize; i++) {
 		m_chunks[i].render();
 	}
 
@@ -55,7 +55,7 @@ std::string World::getWorldDataBase64() {
     last.count = 1;
     last.type = m_data[0];
 
-    int blockCount = CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * m_worldSize * m_worldSize * 4;
+    int blockCount = CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * m_worldSize * m_worldSize * m_worldSize;
     for (int i = 1; i < blockCount; i++) {
         if (m_data[i].r == last.type.r &&
             m_data[i].g == last.type.g &&
@@ -91,7 +91,7 @@ void World::save() {
     }
 
     // Step 2: Write the world data
-    file.write(reinterpret_cast<const char*>(m_data), CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * m_worldSize * m_worldSize * 4 * sizeof(Block));
+    file.write(reinterpret_cast<const char*>(m_data), CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_WIDTH * m_worldSize * m_worldSize * m_worldSize * sizeof(Block));
     if (!file) {
         std::cerr << "Error writing world data." << std::endl;
         return;
@@ -105,7 +105,7 @@ unsigned int World::getWorldSize() {
 }
 
 void World::updateMeshes(){
-	for(int y = 0; y < 4; y++) {
+	for(int y = 0; y < m_worldSize; y++) {
 		for(int z = 0; z < m_worldSize; z++) {
 			for(int x = 0; x < m_worldSize; x++) {
 				int chunkIndex = (y * m_worldSize * m_worldSize) + (z * m_worldSize) + x;
@@ -141,7 +141,7 @@ void World::generateMesh(int chunkX, int chunkY, int chunkZ){
 }
 
 bool World::isBlockInLocalWorld(int _x, int _y, int _z) const {
-	if(_x < 0 || _x >= CHUNK_WIDTH * m_worldSize || _z < 0 || _z >= CHUNK_WIDTH * m_worldSize || _y < 0 || _y >= CHUNK_WIDTH * 4) return false;
+	if(_x < 0 || _x >= CHUNK_WIDTH * m_worldSize || _z < 0 || _z >= CHUNK_WIDTH * m_worldSize || _y < 0 || _y >= CHUNK_WIDTH * m_worldSize) return false;
 	return true;
 }
 
@@ -169,7 +169,7 @@ void World::setBlock(int x, int y, int z, Block block) {
 				int cPosX = chunkX + i;
 				int cPosY = chunkY + j;
 				int cPosZ = chunkZ + k;
-				if(!(cPosX < 0 || cPosX >= m_worldSize || cPosZ < 0 || cPosZ >= m_worldSize || cPosY < 0 || cPosY >= 4)) {
+				if(!(cPosX < 0 || cPosX >= m_worldSize || cPosZ < 0 || cPosZ >= m_worldSize || cPosY < 0 || cPosY >= m_worldSize)) {
 					getChunk(cPosX, cPosY, cPosZ)->needsMeshUpdate = true;
 				}
 			}
