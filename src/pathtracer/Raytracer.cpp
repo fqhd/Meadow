@@ -2,13 +2,44 @@
 #include "../base64.h"
 #include <cstring>
 
-Raytracer::Raytracer(int width, int height, const glm::vec3& camPos, const glm::vec3& lookAt, float fov, float aperture, float focusDistance, int worldSize, const std::string& encoding)
-	: Cam(camPos, lookAt, width, height, fov, aperture, focusDistance), Canvas(width, height),
+Raytracer::Raytracer(int width, int height, float fov, float aperture, float focusDistance, int worldSize)
+	: Cam(glm::vec3(0.0), glm::vec3(1.0), width, height, fov, aperture, focusDistance), Canvas(width, height),
 	m_Width(width), m_Height(height)
 {
 	m_WorldSize = worldSize;
+	m_WorldDataSizeInBytes = worldSize * worldSize * 16 * 16 * 16 * 4 * 4 + sizeof(SceneData);
+    m_WorldData = new unsigned char[m_WorldDataSizeInBytes];
 
-	std::vector<BYTE> bytes = base64_decode(encoding);
+    m_GPUVK = std::make_unique<GPUVK>(m_Width, m_Height, m_WorldDataSizeInBytes);
+}
+
+void Raytracer::Draw(const WorldData& wData, int numAccumFrames)
+{
+    uint64_t* data = new uint64_t[m_Width * m_Height * 4];
+    memset(data, 0, m_Width * m_Height * 4 * sizeof(uint64_t));
+
+    for (int i = 0; i < numAccumFrames; i++) {
+        UpdateGPUData(wData);
+        m_GPUVK->Run(Canvas, m_WorldData, m_WorldDataSizeInBytes);
+        m_FrameCount++;
+
+        for (int i = 0; i < m_Width * m_Height * 4; i++) {
+            data[i] += Canvas.GetData()[i];
+        }
+    }
+
+    for (int i = 0; i < m_Width * m_Height * 4; i++) {
+        Canvas.GetData()[i] = data[i] / numAccumFrames;
+    }
+}
+
+void Raytracer::UpdateGPUData(const WorldData& wData)
+{
+    Cam.Position = wData.camPos;
+    Cam.Direction = wData.camDir;
+    Cam.Update();
+
+    std::vector<BYTE> bytes = base64_decode(wData.worldEnc);
     struct BlockSegment {
         unsigned char r, g, b;
         bool visible;
@@ -27,9 +58,6 @@ Raytracer::Raytracer(int width, int height, const glm::vec3& camPos, const glm::
 
     memcpy(segments.data(), bytes.data(), bytes.size());
 
-    m_WorldDataSizeInBytes = worldSize * worldSize * 16 * 16 * 16 * 4 * 4 + sizeof(SceneData);
-    m_WorldData = new unsigned char[m_WorldDataSizeInBytes];
-
     int idx = sizeof(SceneData);
 
     for (int i = 0; i < segments.size(); i++) {
@@ -41,32 +69,6 @@ Raytracer::Raytracer(int width, int height, const glm::vec3& camPos, const glm::
         }
     }
 
-    m_GPUVK = std::make_unique<GPUVK>(m_Width, m_Height, m_WorldDataSizeInBytes);
-}
-
-void Raytracer::Draw(int numAccumFrames)
-{
-    uint64_t* data = new uint64_t[m_Width * m_Height * 4];
-    memset(data, 0, m_Width * m_Height * 4 * sizeof(uint64_t));
-
-    for (int i = 0; i < numAccumFrames; i++) {
-        Cam.Update();
-        UpdateGPUData();
-        m_GPUVK->Run(Canvas, m_WorldData, m_WorldDataSizeInBytes);
-        m_FrameCount++;
-
-        for (int i = 0; i < m_Width * m_Height * 4; i++) {
-            data[i] += Canvas.GetData()[i];
-        }
-    }
-
-    for (int i = 0; i < m_Width * m_Height * 4; i++) {
-        Canvas.GetData()[i] = data[i] / numAccumFrames;
-    }
-}
-
-void Raytracer::UpdateGPUData()
-{
     SceneData data;
 	// General Information
 	data.width = m_Width;

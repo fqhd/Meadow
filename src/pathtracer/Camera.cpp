@@ -19,7 +19,7 @@ void Camera::Update()
 	float viewportHeight = 2.0f * h;
 	float viewportWidth = Ratio * viewportHeight;
 
-	W = glm::normalize(Position - Direction);
+	W = glm::normalize(-Direction);
 	U = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), W));
 	V = glm::cross(W, U);
 

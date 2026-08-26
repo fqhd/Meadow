@@ -4,18 +4,26 @@
 #include "GPUVK.h"
 #include "SceneData.h"
 
+
+struct WorldData {
+    glm::vec3 camPos;
+    glm::vec3 camDir;
+    int worldSize;
+    std::string worldEnc;
+};
+
 class Raytracer {
 public:
 
-	Raytracer(int width, int height, const glm::vec3& camPos, const glm::vec3& lookAt, float fov, float aperture, float focusDistance, int worldSize, const std::string& encoding);
-	void Draw(int numAccumFrames);
+	Raytracer(int width, int height, float fov, float aperture, float focusDistance, int worldSize);
+	void Draw(const WorldData& data, int numAccumFrames);
 
 	Camera Cam;
 	Image Canvas;
 
 private:
 
-	void UpdateGPUData();
+	void UpdateGPUData(const WorldData& data);
 
 
 	std::unique_ptr<GPUVK> m_GPUVK;

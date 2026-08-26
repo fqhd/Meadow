@@ -11,9 +11,8 @@ void Game::init(Block* data, unsigned int worldSize) {
 	skybox.init();
 }
 
-void Game::saveRenderState() {
-    std::string fileName = Utils::generateRandomString(12);
-    fileName += ".txt";
+void Game::saveRenderState(const std::string& path) {
+
     std::string contents = "";
     contents += "CameraPosition: ";
     contents += std::to_string(camera.getPosition().x) + " " + std::to_string(camera.getPosition().y) + " " + std::to_string(camera.getPosition().z);
@@ -21,8 +20,8 @@ void Game::saveRenderState() {
     contents += std::to_string(camera.getForward().x) + " " + std::to_string(camera.getForward().y) + " " + std::to_string(camera.getForward().z);
     contents += "\nWorldSize: " + std::to_string(world.getWorldSize());
     contents += "\nWorldData: " + world.getWorldDataBase64();
-    Utils::writeStringToFile(contents, fileName);
-    std::cout << "Render state saved: " << fileName << std::endl;
+    Utils::writeStringToFile(contents, path);
+    std::cout << "Render state saved: " << path << std::endl;
 }
 
 void Game::update(float dt, GameState& state) {
@@ -32,7 +31,21 @@ void Game::update(float dt, GameState& state) {
 	}
 
 	if (InputManager::isKeyPressed(GLFW_KEY_F)) {
-        saveRenderState();
+    	std::string fileName = Utils::generateRandomString(12);
+        fileName += ".txt";
+        saveRenderState(fileName);
+	}
+
+	if (InputManager::isKeyPressed(GLFW_KEY_R)) {
+	    recording = !recording;
+	}
+
+	if (recording) {
+	    std::string path = "recordings/frame_";
+		path += std::to_string(frame);
+		path += ".txt";
+		saveRenderState(path);
+		frame++;
 	}
 
 	player.update(dt);

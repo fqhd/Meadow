@@ -15,7 +15,7 @@ public:
 	void update(float dt, GameState& state);
 	void render();
 	void destroy();
-	void saveRenderState();
+	void saveRenderState(const std::string& path);
 
 	World world;
 	Player player;
@@ -23,5 +23,7 @@ public:
 	BlockOutline outline;
 	Skybox skybox;
 	bool toggleHud = true;
+	bool recording = false;
+	int frame = 0;
 
 };
