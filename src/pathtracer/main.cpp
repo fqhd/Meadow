@@ -1,6 +1,9 @@
 #include "Raytracer.h"
 #include "Benchmarker.h"
 #include <fstream>
+#include <vector>
+#include <cstring>
+#include <iostream>
 
 WorldData loadWorldData(const std::string& path) {
     WorldData data;
@@ -35,28 +38,60 @@ WorldData loadWorldData(const std::string& path) {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc < 2) {
+    // Default values
+    float fov = 90.0f;
+    int spp = 1;
+    std::vector<std::string> renderFiles;
+
+    // Parse command line arguments
+    for (int i = 1; i < argc; ++i) {
+        if (std::strcmp(argv[i], "-fov") == 0) {
+            if (i + 1 < argc) {
+                fov = std::stof(argv[++i]);
+            } else {
+                std::cerr << "Error: -fov requires a numeric value" << std::endl;
+                return -1;
+            }
+        } else if (std::strcmp(argv[i], "-spp") == 0) {
+            if (i + 1 < argc) {
+                spp = std::stoi(argv[++i]);
+                if (spp < 1) {
+                    std::cerr << "Error: spp must be at least 1" << std::endl;
+                    return -1;
+                }
+            } else {
+                std::cerr << "Error: -spp requires an integer value" << std::endl;
+                return -1;
+            }
+        } else {
+            renderFiles.push_back(argv[i]);
+        }
+    }
+
+    if (renderFiles.empty()) {
         std::cerr << "Must specify at least one render file" << std::endl;
         return -1;
     }
 
+    // Use the first render file to get world size for constructor
+    WorldData firstData = loadWorldData(renderFiles[0]);
     Raytracer raytracer(
-		1280, 720, 90.0f, 0.01f, 18.0f, loadWorldData(argv[1]).worldSize
-	);
+        1280, 720, fov, 0.01f, 18.0f, firstData.worldSize
+    );
 
-    for (int i = 1; i < argc; i++) {
-        std::string arg1 = argv[i];
-        std::cout << "Processing " << arg1 << std::endl;
-        WorldData data = loadWorldData(arg1);
+    for (const std::string& file : renderFiles) {
+        std::cout << "Processing " << file << std::endl;
+        WorldData data = loadWorldData(file);
 
         Benchmarker::Start("Draw");
-        raytracer.Draw(data, 1);
+        raytracer.Draw(data, spp);   // <-- spp passed here
         Benchmarker::End("Draw");
-        arg1.erase(arg1.size() - 3);
-    	arg1 += "png";
-    	raytracer.Canvas.Save(arg1);
+
+        std::string outFile = file;
+        outFile.erase(outFile.size() - 3);  // remove ".txt" (assumes 3‑character extension)
+        outFile += "png";
+        raytracer.Canvas.Save(outFile);
     }
 
-
-	return 0;
+    return 0;
 }
