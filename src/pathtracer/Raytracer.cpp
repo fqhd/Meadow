@@ -31,6 +31,8 @@ void Raytracer::Draw(const WorldData& wData, int numAccumFrames)
     for (int i = 0; i < m_Width * m_Height * 4; i++) {
         Canvas.GetData()[i] = data[i] / numAccumFrames;
     }
+
+    delete[] data;
 }
 
 void Raytracer::UpdateGPUData(const WorldData& wData)
