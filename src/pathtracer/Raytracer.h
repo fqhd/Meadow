@@ -30,7 +30,6 @@ private:
 	int m_Width = 0;
 	int m_Height = 0;
 	int m_WorldSize = 0;
-	int m_FrameCount = 0;
 
 	unsigned char* m_WorldData;
 	int m_WorldDataSizeInBytes;

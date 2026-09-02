@@ -21,7 +21,6 @@ void Raytracer::Draw(const WorldData& wData, int numAccumFrames)
     for (int i = 0; i < numAccumFrames; i++) {
         UpdateGPUData(wData); // Make sure this function is relatively light (doesn't decompress world data every frame)
         m_GPUVK->Run(Canvas, m_WorldData, m_WorldDataSizeInBytes);
-        m_FrameCount++;
 
         for (int i = 0; i < m_Width * m_Height * 4; i++) {
             data[i] += Canvas.GetData()[i];
@@ -76,7 +75,7 @@ void Raytracer::UpdateGPUData(const WorldData& wData)
 	data.width = m_Width;
 	data.height = m_Height;
 	data.worldSize = m_WorldSize;
-	data.frameSeed = m_FrameCount;
+	data.frameSeed = rand();
 
 	// Camera
 	data.camera.position = Cam.Position;

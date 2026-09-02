@@ -6,6 +6,7 @@
 #include <iostream>
 
 WorldData loadWorldData(const std::string& path) {
+    srand(time(0));
     WorldData data;
 
     std::ifstream is(path);
@@ -76,7 +77,7 @@ int main(int argc, char* argv[]) {
     // Use the first render file to get world size for constructor
     WorldData firstData = loadWorldData(renderFiles[0]);
     Raytracer raytracer(
-        1280, 720, fov, 0.01f, 18.0f, firstData.worldSize
+        512, 512, fov, 0.01f, 18.0f, firstData.worldSize
     );
 
     for (const std::string& file : renderFiles) {
